@@ -13,3 +13,9 @@ print("node.heap()",node.heap(),string.format("%dKiB",node.heap()/1014))
 print("file.list()",table.concat(file.list(),", "))
 
 print("file.stat() with json",sjson.encode(file.stat("README.md")))
+
+if false then
+   tmr.create():alarm(2,tmr.ALARM_AUTO,function(t)
+      print("ping")
+   end)
+end

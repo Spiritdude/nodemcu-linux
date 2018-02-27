@@ -8,6 +8,7 @@
 --    Providing rtctime in case module doesn't exist
 --
 -- History: 
+-- 2018/02/27: 0.0.2: rtctime.dsleep() and rtctime.dsleep_aligned() placeholder
 -- 2018/02/10: 0.0.1: moved from rtc/init.lua to here
 
 local socket = require('socket')
@@ -45,6 +46,12 @@ rtctime = {
       tm.day = dno+1
       tm.year = y
       return tm
+   end,
+   dsleep = function()  -- Puts the device into deep sleep mode, like node.
+      _syslog.print(_syslog.ERROR,"rctime.dsleep() is not yet implemented")
+   end,
+   dsleep_aligned = function()    -- For applications where it is necessary to take samples with high regularity, this function is useful.
+      _syslog.print(_syslog.ERROR,"rctime.dsleep_aligned() is not yet implemented")
    end
 }
 

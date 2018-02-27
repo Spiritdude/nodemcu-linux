@@ -85,7 +85,7 @@ The `>` is the prompt, awaiting console Lua input - abort with CTRL-C twice.
 
 ## Detailed Development
 
-See [NodeMCU Shell Development](https://spiritdude.wordpress.com/2018/02/26/nodemcu-linux/) which I document more fine-grained state of the development with examples.
+See my [Spiritude's Public Notebook: NodeMCU Shell Development](https://spiritdude.wordpress.com/2018/02/26/nodemcu-linux/) which I document more fine-grained state of the development with examples.
 
 
 Ren&eacute; K. M&uuml;ller<br>

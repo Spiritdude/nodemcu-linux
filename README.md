@@ -29,10 +29,11 @@ Check out the [NodeMCU/Linux Wiki](https://github.com/Spiritdude/nodemcu-linux/w
 running with Lua 5.1 (`lua5.1`)
 
 ## Todo
-- implement all base modules
+- implement **all** base modules **completely** and document it properly
 - thorough tests (automated)
 - `u8g2` which needs low-level I2C or SPI interface hardware-near implemented
 - include Lua modules which support various I2C/SPI devices
+- test example/tests with NodeMCU/8266 and NodeMCU/ESP32 as well
 
 ## Installation
 

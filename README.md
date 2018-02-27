@@ -3,6 +3,7 @@
 ## Introduction
 
 <img src="https://raw.githubusercontent.com/Spiritdude/nodemcu-linux/master/imgs/nodemcu-linux.png" align=right>
+
 **NodeMCU/Linux** aims to implement the NodeMCU API as known by [NodeMCU/ESP8266](https://github.com/nodemcu/nodemcu-firmware) or aka "NodeMCU firmware", to additionally support
 
 - **Raspberry Pi** (EUR 35) and **RPi Zero** (EUR 5-10) running [Raspbian](https://www.raspberrypi.org/downloads/raspbian/)

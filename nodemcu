@@ -1,0 +1,138 @@
+#!/usr/bin/lua5.1
+--#!/usr/bin/luajit
+
+-- == NodeMCU/Linux ==
+--
+-- Copyright (c) 2018 by Rene K. Mueller <spiritdude@gmail.com>
+--
+-- License: MIT (see LICENSE file)
+--
+-- Description: 
+--   see http://github.com/Spiritdude/nodemcu-linux
+-- Notes:
+--    luajit has built-in ffi(), but function(...) arg isn't set, but needs `arg = {...}`
+--    lua5.1 requires 3rd party luaffifb for ffi(), and it does function(...) arg set
+--
+-- History:
+-- 2018/02/27: 0.0.3: 'nodemcu' takes arguments and are executed
+-- 2018/02/25: 0.0.2: dofile() redefined so ./ and /usr/local/lib/nodemcu paths are considered (easier dev process)
+-- 2018/02/24: 0.0.1: first version: node, tmr, file, gpio and rtctime with very reduced functionality
+
+VERSION = '0.0.3'
+
+dofile = function(fn)                       -- we redefine so we extend it in manners we need 
+   for i,k in pairs({'./','/usr/local/lib/nodemcu/'}) do
+      if io.open(k..fn) then
+         io.close()
+         if tmr and _syslog then       -- might not be available yet
+            _syslog.print(_syslog.INFO,"dofile "..k..fn)
+         end
+         local f = assert(loadfile(k..fn))
+         return f()
+      end
+   end
+   _syslog.print(_syslog.ERROR,"file "..fn.." not found execute")
+   return nil
+end
+                                            
+dofile("modules/base/base.lua")
+
+-- Lua modules
+dofile("modules/node/node.lua")
+dofile("modules/tmr/tmr.lua")
+_syslog.print(_syslog.INFO,"loading modules ('node' and 'tmr' already loaded)")     -- only at this point we have functionality for _syslog.print() 
+--dofile("modules/wifi/wifi.lua")
+dofile("modules/file/file.lua")
+dofile("modules/gpio/gpio.lua")
+dofile("modules/i2c/i2c.lua")
+--dofile("modules/net/net.lua")
+dofile("modules/rtctime/rtctime.lua")
+dofile("modules/sjson/sjson.lua")
+
+-- inherent built-in modules
+bit = require("bit")
+table.insert(node.modules,"bit")
+
+struct = require("struct")
+table.insert(node.modules,"struct")
+
+_syslog.print(_syslog.INFO,"modules bit, struct built-in added")
+
+if math then
+   table.insert(node.modules,"math")
+   _syslog.print(_syslog.INFO,"module math added")
+end
+
+-- gather CPU info
+_sysinfo = { }
+local f = io.popen("lscpu")
+repeat 
+   local t = f:read("*line")
+   if t then
+      local k, v = t:match("([^:]+):%s+(.+)$")
+      k = k:lower()
+      k = k:gsub("%(s%)","s")
+      k = k:gsub(" ","_")
+      _sysinfo[k] = v
+   end
+until t==nil
+f:close()
+--table.foreach(_sysinfo,print)
+
+local bnr = ""
+if false then
+   local bfn = 'misc/banner.co.txt'
+   if file.exists(bfn) then
+      local f = file.open(bfn,"r")
+      bnr = bnr .. f:read('*all')
+      f:close()
+   end
+end
+
+bnr = bnr .. "NodeMCU/Linux "..VERSION.." powered by ".._VERSION..", "..string.format("Device ID: %d / 0x%x",node.chipid(),node.chipid())
+bnr = bnr .. "\n   " .. _sysinfo.architecture..(_sysinfo.model_name and " ".._sysinfo.model_name or "").." (".._sysinfo.cpus.." cores"..(_sysinfo.cpu_max_mhz and ", "..int(_sysinfo.cpu_min_mhz).."-"..int(_sysinfo.cpu_max_mhz).."MHz" or "")..")"
+bnr = bnr .. "\n   " .. "modules: "
+for i,v in ipairs(node.modules) do
+   bnr = bnr .. (i>1 and " " or "") .. v
+end
+
+print(bnr)
+
+if file.exists("init.lua") then
+   _syslog.print(_syslog.INFO,"execute init.lua")
+   dofile("init.lua")
+else
+   _syslog.print(_syslog.WARN,"cannot open 'init.lua'")
+end
+
+--table.foreach(arg,print)
+if #arg >= 1 then
+   for i=1,#arg do 
+      local f = dofile(arg[i])
+      if type(f)=='function' then
+         f()
+      end
+   end
+else 
+   --print("== Lua console started (CTRL-C and then RETURN will exit console)")
+   while true do
+      io.write("> ")
+      local s = io.read()
+      local f = loadstring(s)
+      local r
+      if type(f)=='function' then
+         r = f()
+      else
+         r = f
+      end
+      if r then
+         r = tostring(r)
+         if r:match("%n$") then
+            io.write("> "..r)
+         else
+            io.write(": "..r.."\n")
+         end
+      end
+   end
+end
+

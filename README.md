@@ -15,17 +15,18 @@ The idea is to implement majority of the base modules in Lua itself, with few ho
 
 ## Current State
 
-Check out the [NodeMCU/Linux Wiki](https://github.com/Spiritdude/nodemcu-linux/wiki) with current state of the base modules.
+Check out the [NodeMCU/Linux Wiki](https://github.com/Spiritdude/nodemcu-linux/wiki) with current state of the base modules, an incomplete summary:
 - `node`: mostly implemented
-- `tmr`: just `tmr.now()`, `tmr.time()` and `tmr.uptime()` implemented
+- `tmr`: just `tmr.now()`, `tmr.time()` and `tmr.uptime()` implemented, `tmr:*()` missing
 - `file`: basic operations implemented but mostly untested
 - `rtctime`: implemented
 - `gpio`: partially implemented but entirely untested
+- `i2c`: code skeleton, far away to be functional
 - `bit`: built-in
 - `math`: built-in
 - `sjson`: built-in with `lunajson`
 
-running with Lua 5.1
+running with Lua 5.1 (`lua5.1`)
 
 ## Todo
 - implement all base modules

@@ -19,7 +19,7 @@ Check out the [NodeMCU/Linux Wiki](https://github.com/Spiritdude/nodemcu-linux/w
 - `node`: mostly implemented
 - `tmr`: just `tmr.now()`, `tmr.time()` and `tmr.uptime()` implemented, `tmr:*()` missing
 - `file`: basic operations implemented but mostly untested
-- `rtctime`: implemented
+- `rtctime`: partially implemented
 - `gpio`: partially implemented but entirely untested
 - `i2c`: code skeleton, far away to be functional
 - `bit`: built-in

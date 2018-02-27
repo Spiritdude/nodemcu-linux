@@ -79,8 +79,10 @@ file.stat() with json {"time":{"min":43,"wday":2,"day":27,"yday":57,"year":2018,
 
 The `>` is the prompt, awaiting console Lua input - abort with CTRL-C twice.
 
+
 ```
-% nodemcu tests/file01.lua
+% cd tests
+% nodemcu file01.lua
 ```
 
 ## Detailed Development

@@ -29,21 +29,28 @@ file.exists = function(fn)    -- Determines whether the specified file exists.
 end
 
 file.format = function()      -- Format the file system.
-   _syslog.print(_syslog.ERROR,"file.format() not implemented")
+   _syslog.print(_syslog.ERROR,"file.format() not yet implemented")
 end
 
 file.fscfg = function()       -- Returns the flash address and physical size of the file system area, in bytes.
-   return 0,0
+   local path, total, used, avail, usep, mount = file.fsinfo()
+   return 0,total
 end
 
 file.fsinfo = function()      -- Return size information for the file system.
-   return 0
+   local f = io.popen("df -k .")
+   _ = f:read("*line")
+   _ = f:read("*line")
+   f:close()
+   local path, total, used, avail, usep, mount = _:match("^(%S+)%s+(%d+)%s+(%d+)%s+(%d+)%s+(%S+)%s+(%S+)");
+   return avail, used, total
 end
 
 file.list = function(d)       -- Lists all files in the file system.
    local fl = { }
    for f in lfs.dir(d or ".") do
-      table.insert(fl,f)
+      local st = lfs.attributes((d or ".").."/"..f)
+      fl[f] = st.size or 0
    end
    return fl
 end

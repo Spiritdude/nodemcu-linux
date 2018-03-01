@@ -34,10 +34,10 @@ end
 
 file.fscfg = function()       -- Returns the flash address and physical size of the file system area, in bytes.
    local path, total, used, avail, usep, mount = file.fsinfo()
-   return 0,total
+   return 0, total * 1024
 end
 
-file.fsinfo = function()      -- Return size information for the file system.
+file.fsinfo = function()      -- Return size information for the file system in kbytes
    local f = io.popen("df -k .")
    _ = f:read("*line")
    _ = f:read("*line")

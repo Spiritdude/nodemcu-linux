@@ -26,3 +26,7 @@ if false then
       print("ping")
    end)
 end
+
+if file.exists("cpu/main.lua") then          -- NodeMCU Shell arround, if so run `cpu` command
+   dofile("cpu/main.lua")("cpu")
+end

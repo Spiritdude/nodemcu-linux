@@ -68,12 +68,12 @@ node.flashid = function()        -- Returns the flash chip ID.
    _ = f:read("*line")   -- 'UUID'
    _ = f:read("*line")
    f:close()
-   return _:match("(%S+)")
+   return _:match("(%S+)")    -- pass disk UUID as flashid
 end
 
 node.flashsize = function()      -- Returns the flash chip size in bytes.
    local remain, used, total = file.fsinfo()
-   return total
+   return total * 1024
 end
 
 node.heap = function()           -- Returns the current available heap size in bytes.

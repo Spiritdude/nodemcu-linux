@@ -98,7 +98,7 @@ end
 
 print(bnr)
 if node._cpufreq then
-   _syslog.print(_syslog.INFO,"possible cpu freq [MHz]: "..table.concat(node._cpufreq,", "))
+   print("   cpu freq table [MHz]: "..table.concat(node._cpufreq,", "))
 end
 
 if file.exists("init.lua") then

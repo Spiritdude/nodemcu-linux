@@ -133,15 +133,15 @@ node.setcpufreq = function(f)     -- Change the working CPU Frequency.
       local mx = tonumber(_sysinfo.cpu_max_mhz)
       if f >= mi and f <= mx then
          -- we need to check valid settings (within the range)
-         local set = false
+         local cset = false
          for i,ff in pairs(node._cpufreq) do
             if ff==f then
                os.execute("cpufreq-set --freq "..f.."MHz")
-               set = true
+               cset = true
                break
             end
          end
-         if not set then
+         if not cset then
             local o = "   "
             --table.sort(node._cpufreq)
             for i,f in pairs(node._cpufreq) do
@@ -153,7 +153,7 @@ node.setcpufreq = function(f)     -- Change the working CPU Frequency.
             else 
                local ff           -- being generous: find a possible frequency 
                for i,ff in pairs(node._cpufreq) do
-                  if ff >= f then
+                  if ff >= tonumber(_sysinfo.cpu_min_mhz) and ff >= f then
                      os.execute("cpufreq-set --freq "..ff.."MHz")
                      _syslog.print(_syslog.INFO,"frequency "..f.." [MHz] isn't available, instead "..ff.." [MHz] used")
                      break

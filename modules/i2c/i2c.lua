@@ -11,30 +11,31 @@
 
 local I2C = require('periphery').I2C
 
+
 i2c = {
-   HW0 = "/dev/i2c-0",
-   HW1 = "/dev/i2c-1",
-   HW2 = "/dev/i2c-2",
-   HW3 = "/dev/i2c-3",
-   HW4 = "/dev/i2c-4",
-   HW5 = "/dev/i2c-5",
-   HW6 = "/dev/i2c-6",
-   HW7 = "/dev/i2c-7",
+   DEV_PREFIX = I2C_DEV_PREFIX or "/dev/i2c-",
+   --HW0 = "/dev/i2c-0",   -- these will be autoset
+   --HW1 = "/dev/i2c-1", 
+   --...
    TRANSMITTER = 0,
    RECEIVER = 1
 }
 
-if not file.exists(i2c.HW0) then
-   _syslog.print(_syslog.INFO,"i2c: no interface found (or limited permissions)")
+if not file.exists(i2c.DEV_PREFIX..0) then
+   _syslog.print(_syslog.INFO,"i2c: no interface found")
 else
    local i = 0
+   local o = ""
    for d=0,7 do 
-      if not file.exists("/dev/i2c-"..d) then
+      if not file.exists(i2c.DEV_PREFIX..d) then
          break
       end
+      o = o .. (i>0 and " " or "") .. i2c.DEV_PREFIX .. i
+      i2c['HW'..i] = i2c.DEV_PREFIX .. i
       i = i+1
+      i2c._count = i
    end
-   _syslog.print(_syslog.INFO,"i2c: "..i.." interfaces found")
+   _syslog.print(_syslog.INFO,"i2c: "..i.." interface(s) found: "..o)
 end
 
 i2c.setup = function(id,sda,scl,sp)   -- Initialize the IC module.

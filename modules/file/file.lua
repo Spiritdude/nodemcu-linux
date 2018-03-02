@@ -23,9 +23,14 @@ file.chdir = function(d)      -- Change current directory (and drive).
 end
 
 file.exists = function(fn)    -- Determines whether the specified file exists.
-   local f = io.open(fn,"r")
-   if f then io.close(f) end
-   return f and true or false
+   if true then
+      local st = lfs.attributes(fn)    -- better
+      return st and true or false
+   else
+      local f = io.open(fn,"r")        -- fallback
+      if f then io.close(f) end
+      return f and true or false
+   end
 end
 
 file.format = function()      -- Format the file system.

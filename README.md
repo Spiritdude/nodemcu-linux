@@ -54,7 +54,7 @@ I [0.000] loading modules ('node' and 'tmr' already loaded)
 I [0.001] dofile ./modules/file/file.lua
 I [0.006] dofile ./modules/gpio/gpio.lua
 I [0.011] dofile ./modules/i2c/i2c.lua
-I [0.013] i2c: no interface found (or limited permissions)
+I [0.013] i2c: 2 interface(s) found: /dev/i2c-0 /dev/i2c-1
 I [0.014] dofile ./modules/rtctime/rtctime.lua
 I [0.016] dofile ./modules/sjson/sjson.lua
 I [0.037] modules bit, struct built-in added

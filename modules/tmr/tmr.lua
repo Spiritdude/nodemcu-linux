@@ -43,6 +43,7 @@ tmr.uptime = function()      -- Returns the system uptime, in seconds with micro
    return socket.gettime() - tmr._start
 end
 
+_ = [[
 tmr.create = function()      -- Creates a dynamic timer object.
    return {
       alarm = function(self,t,m,func)   -- This is a convenience function combining tmr.
@@ -119,6 +120,7 @@ end
 
 tmr.wdclr = function()       -- Feed the system watchdog.
 end
+]]
 
 table.insert(node.modules,'tmr')
 

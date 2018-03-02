@@ -19,6 +19,27 @@ node = {
    modules = { }
 }
 
+-- probe available cpu frequencies (for node.setcpufreq())
+local f = io.popen("cpufreq-info")
+repeat
+   local t = f:read("*line")
+   if t and t:match("available frequency steps:") then
+      for v,u in t:gmatch("([%d%.]+) ([MG]Hz)") do
+         v = tonumber(v)
+         if u=='GHz' then
+            v = v * 1000
+         end
+         if not node._cpufreq then
+            node._cpufreq = { }
+         end
+         --node._cpufreq[v] = v
+         table.insert(node._cpufreq,v)
+      end
+      t = nil
+   end
+until t==nil
+f:close()
+
 local _getmac = function()
    if not node._mac then
       local f = io.popen('ifconfig')
@@ -112,7 +133,34 @@ node.setcpufreq = function(f)     -- Change the working CPU Frequency.
       local mx = tonumber(_sysinfo.cpu_max_mhz)
       if f >= mi and f <= mx then
          -- we need to check valid settings (within the range)
-         os.execute("/usr/bin/cpufreq-set "..f.."MHz")
+         local set = false
+         for i,ff in pairs(node._cpufreq) do
+            if ff==f then
+               os.execute("cpufreq-set --freq "..f.."MHz")
+               set = true
+               break
+            end
+         end
+         if not set then
+            local o = "   "
+            --table.sort(node._cpufreq)
+            for i,f in pairs(node._cpufreq) do
+               o = o .. f .. " "
+            end
+            if false then         -- being restrictive
+               print("node.setcpufreq(): ERROR: only following frequencies [MHz] settings possible:")
+               print(o)
+            else 
+               local ff           -- being generous: find a possible frequency 
+               for i,ff in pairs(node._cpufreq) do
+                  if ff >= f then
+                     os.execute("cpufreq-set --freq "..ff.."MHz")
+                     _syslog.print(_syslog.INFO,"frequency "..f.." [MHz] isn't available, instead "..ff.." [MHz] used")
+                     break
+                  end
+               end
+            end
+         end
       else 
          _syslog.print(_syslog.ERROR,"node.setcpufreq(): range of "..mi.."-"..mx.." is supported: "..f.." out of range")
       end

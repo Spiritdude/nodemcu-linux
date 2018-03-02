@@ -27,13 +27,14 @@ i2c = {
 if not file.exists(i2c.HW0) then
    _syslog.print(_syslog.INFO,"i2c: no interface found (or limited permissions)")
 else
-   local d
+   local i = 0
    for d=0,7 do 
       if not file.exists("/dev/i2c-"..d) then
          break
       end
+      i = i+1
    end
-   _syslog.print(_syslog.INFO,"i2c: "..(d+1).." interfaces found")
+   _syslog.print(_syslog.INFO,"i2c: "..i.." interfaces found")
 end
 
 i2c.setup = function(id,sda,scl,sp)   -- Initialize the IC module.

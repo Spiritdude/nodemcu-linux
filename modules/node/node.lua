@@ -19,26 +19,29 @@ node = {
    modules = { }
 }
 
--- probe available cpu frequencies (for node.setcpufreq())
-local f = io.popen("cpufreq-info")
-repeat
-   local t = f:read("*line")
-   if t and t:match("available frequency steps:") then
-      for v,u in t:gmatch("([%d%.]+) ([MG]Hz)") do
-         v = tonumber(v)
-         if u=='GHz' then
-            v = v * 1000
+if io.open("/usr/bin/cpufreq-info") then                 -- we don't have file.exists() yet
+   io.close()
+   -- probe available cpu frequencies (for node.setcpufreq())
+   local f = io.popen("cpufreq-info")
+   repeat
+      local t = f:read("*line")
+      if t and t:match("available frequency steps:") then
+         for v,u in t:gmatch("([%d%.]+) ([MG]Hz)") do
+            v = tonumber(v)
+            if u=='GHz' then
+               v = v * 1000
+            end
+            if not node._cpufreq then
+               node._cpufreq = { }
+            end
+            --node._cpufreq[v] = v
+            table.insert(node._cpufreq,v)
          end
-         if not node._cpufreq then
-            node._cpufreq = { }
-         end
-         --node._cpufreq[v] = v
-         table.insert(node._cpufreq,v)
+         t = nil
       end
-      t = nil
-   end
-until t==nil
-f:close()
+   until t==nil
+   f:close()
+end
 
 local _getmac = function()
    if not node._mac then

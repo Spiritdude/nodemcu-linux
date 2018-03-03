@@ -45,7 +45,7 @@ local _getmac = function()
       local f = io.popen('ifconfig')
       local t = f:read("*all")
       f:close()
-      node._mac = t:match("HWaddr ([%:%x]*)")
+      node._mac = t:match("HWaddr ([%:%x]*)") or t:match("ether ([%:%x]*)")
    end
    return node._mac
 end

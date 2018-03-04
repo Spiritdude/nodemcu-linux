@@ -8,11 +8,60 @@
 --    Common NodeMCU functions (re-)defined.
 --
 -- History:
+-- 2018/03/04: 0.0.2: slowly ramping up functionality: _tasker skeleton of internal scheduler of non-blocking tasks
 -- 2018/02/24: 0.0.1: first version: int(), dofile(), print() and basic syslog.* facility
 
 int = function(i) 
    return math.floor(i)
 end
+
+-- internal tasker
+_tasker = {             -- NOTE: not yet useable, needs to be tested
+   ACTIVE = 0,          -- state
+   INACTIVE = 1,
+
+   LOW = 0,             -- prio
+   MEDIUM = 1,
+   HIGH = 2,
+
+   _list = { },         -- list of tasks
+
+   run = function()
+      for p in pairs({_tasker.HIGH,_tasker.MEDIUM,_tasker.LOW}) do
+         for i,t in pairs(_list) do
+            local t = _list[i]
+            if t.prio == p and t.state == _tasker.ACTIVE then 
+               coroutine.resume(t.cf)
+            end
+         end
+      end
+   end,
+   new = function(f,p) 
+      p = p or _tasker.MEDIUM
+      table.insert(_list,{ 
+         prio = p, 
+         state = _tasker.ACTIVE, 
+         cf = coroutine.create(function() local res = f() coroutine.yield(res) end) 
+      })
+      return #_list
+   end,
+   suspend = function(id)
+      _tasker._list[id].state = _tasker.INACTIVE
+   end,
+   resume = function(id)
+      _tasker._list[id].state = _tasker.ACTIVE
+   end,
+   suspend_all = function()
+      for i,t in pairs(_list) do
+         _tasker.suspend(i)
+      end
+   end,
+   resume_all = function()
+      for i,t in pairs(_list) do
+         _tasker.resume(i)
+      end
+   end
+}
 
 _syslog = {                -- internal syslog facility
    INFO  = "INFO",

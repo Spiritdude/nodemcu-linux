@@ -108,6 +108,14 @@ else
    _syslog.print(_syslog.WARN,"cannot open 'init.lua'")
 end
 
+
+if false then
+   local _tmr = coroutine.create(tmr._run_all)
+   while true do              -- wasteful tmr.create():* testing
+      coroutine.resume(_tmr)
+   end
+end
+
 --table.foreach(arg,print)
 if #arg >= 1 then
    for i=1,#arg do 

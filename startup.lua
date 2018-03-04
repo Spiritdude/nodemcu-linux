@@ -22,8 +22,12 @@ local remain, used, total = file.fsinfo()
 print("file.fsinfo()",string.format("remain %.3fMiB, used %.3fMiB, total %.3fMiB",remain/1024,used/1024,total/1024))
 
 if false then
-   tmr.create():alarm(2,tmr.ALARM_AUTO,function(t)
-      print("ping")
+   tmr.create():alarm(2*1000,tmr.ALARM_AUTO,function(t)
+      print("ping",tmr.uptime())
+   end)
+   tmr.create():alarm(3*1000,tmr.ALARM_AUTO,function(t)
+      print("pong",tmr.uptime())
+      t:unregister()
    end)
 end
 

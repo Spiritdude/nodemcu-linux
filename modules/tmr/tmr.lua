@@ -15,6 +15,7 @@
 --    - https://github.com/davisdude/Timer uses coroutines
 --
 -- History:
+-- 2018/03/04: 0.0.3: tmr.create():* and tmr.suspend_all() and tmr.resume_all() implemented with coroutine backend in mind
 -- 2018/02/25: 0.0.2: tmr.now(), time() and uptime() working
 -- 2018/02/21: 0.0.1: first version, just a skeleton
 
@@ -23,11 +24,19 @@ local bit = require('bit')
 --local timer = loadfile("modules/tmr/timer.lua")()      -- sample code doesn't work .. after wait(1) never reaches next statement
 
 tmr = {
-   _VERSION = '0.0.2',
+   _VERSION = '0.0.3',
    _start = socket.gettime(),
+
    ALARM_SINGLE = 0,
    ALARM_AUTO = 1,
-   ALARM_SEMI = 2
+   ALARM_SEMI = 2,
+
+   _ACTIVE = 0,
+   _INACTIVE = 1,
+   _SUSPENDED = 2,            -- only formerly _ACTIVE instances can be _SUSPENDED
+   
+   _list = { },
+   _last = 0
 }
 
 tmr.now = function()         -- Returns the system counter, which counts in microseconds.
@@ -43,65 +52,76 @@ tmr.uptime = function()      -- Returns the system uptime, in seconds with micro
    return socket.gettime() - tmr._start
 end
 
-_ = [[
 tmr.create = function()      -- Creates a dynamic timer object.
-   return {
+   local t = {
+      _state = tmr._INACTIVE,
+
       alarm = function(self,t,m,func)   -- This is a convenience function combining tmr.
-         -- first test: https://github.com/davisdude/Timer
-         --    - wait(t) never comes back
-         self._timer = timer.new(function() 
-            print("t",t,"m",m)
-            if m==tmr.ALARM_SINGLE then
-               wait(t)
-               func(self)
-            elseif m==tmr.ALARM_AUTO then
-               --while true do 
-                  print("1a",t);
-                  func()
-                  print("1b",t);
-                  wait(t)
-                  print("1c",t);       -- never reaches here (seems not to work)
-               --end
-            elseif m==tmr.ALARM_SEMI then
-               --
-            end
-         end)
-         self._timer:update(1)   
-         --_syslog.print(_syslog.ERROR,"tmr.alarm() not yet implemented")
+         self:register(t,m,func)
+         self:start()
       end,
 
-      interval = function(self)    -- Changes a registered timer's expiry interval.
-         _syslog.print(_syslog.ERROR,"tmr.interval() not yet implemented")
+      interval = function(self,t)           -- Changes a registered timer's expiry interval.
+         self._interval = t / 1000 
+         self._timeout = tmr.uptime() + self._interval 
       end,
 
-      register = function(self)    -- Configures a timer and registers the callback function to call on expiry.
-         _syslog.print(_syslog.ERROR,"tmr.register() not yet implemented")
+      register = function(self,t,m,func)    -- Configures a timer and registers the callback function to call on expiry.
+         self:interval(t)
+         self._mode = m
+         self._func = func
       end,
 
-      resume = function(self)      -- Resume an individual timer.
-         _syslog.print(_syslog.ERROR,"tmr.resume() not yet implemented")
+      resume = function(self)              -- Resume an individual timer.
+         self._state = tmr._ACTIVE
       end,
 
-      start = function(self)       -- Starts or restarts a previously configured timer.
-         _syslog.print(_syslog.ERROR,"tmr.start() not yet implemented")
+      start = function(self)               -- Starts or restarts a previously configured timer.
+         self._state = tmr._ACTIVE
       end,
       
-      state = function(self)       -- Checks the state of a timer.
-         _syslog.print(_syslog.ERROR,"tmr.state() not yet implemented")
+      state = function(self)               -- Checks the state of a timer.
+         return self._state == tmr._ACTIVE, self._mode
       end,
       
-      stop = function(self)        -- Stops a running timer, but does not unregister it.
-         _syslog.print(_syslog.ERROR,"tmr.stop() not yet implemented")
+      stop = function(self)                -- Stops a running timer, but does not unregister it.
+         self._state = tmr._INACTIVE
       end,
             
-      suspend = function(self)     -- Suspend an armed timer.
-         _syslog.print(_syslog.ERROR,"tmr.suspend() not yet implemented")
+      suspend = function(self)             -- Suspend an armed timer.
+         self._state = tmr._SUSPENDED
       end,
 
-      unregister = function(self)  -- Stops the timer (if running) and unregisters the associated callback.
-         _syslog.print(_syslog.ERROR,"tmr.unregister() not yet implemented")
+      unregister = function(self)          -- Stops the timer (if running) and unregisters the associated callback.
+         self._state = tmr._INACTIVE
+         table.remove(tmr._list,self._id)
       end
    }
+
+   tmr._last = tmr._last + 1
+   t._id = tmr._last
+   
+   table.insert(tmr._list,tmr._last,t)
+
+   return t
+end
+
+tmr._run_all = function()
+   while true do
+      local t = tmr.uptime()
+      for i,tm in pairs(tmr._list) do
+         --print(tm._id,tm._state,tm._interval,tm._timeout,t)
+         if tm._state == tmr._ACTIVE and t >= tm._timeout then
+            tm._func(tm)
+            if tm._mode == tmr.ALARM_SINGLE then
+               tm._state = tmr._INACTIVE
+            elseif tm._mode == tmr.ALARM_AUTO then
+               tm._timeout = tmr.uptime() + tm._interval
+            end
+         end
+      end
+      coroutine.yield()
+   end
 end
 
 tmr.delay = function()       -- Busyloops the processor for a specified number of microseconds.
@@ -110,17 +130,29 @@ tmr.delay = function()       -- Busyloops the processor for a specified number o
 end
       
 tmr.resume_all = function()       -- Resume all timers.
-end
-
-tmr.softwd = function()      -- Provides a simple software watchdog, which needs to be re-armed or disabled before it expires, or the system will be restarted.
+   for i,tm in pairs(tmr._list) do
+      if tm._state == tm._SUSPENDED then
+         tm._state = tm._ACTIVE
+         tm._timeout = tmr.uptime() + tm._interval       -- recalculate _timeout
+      end
+   end
 end
 
 tmr.suspend_all = function() -- Suspend all currently armed timers.
+   for i,tm in pairs(tmr._list) do
+      if tm._state == tm._ACTIVE then
+         tm._state = tm._SUSPENDED
+      end
+   end
+end
+
+tmr.softwd = function()      -- Provides a simple software watchdog, which needs to be re-armed or disabled before it expires, or the system will be restarted.
+   _syslog.print(_syslog.ERROR,"tmr.softwd() not yet implemented")
 end
 
 tmr.wdclr = function()       -- Feed the system watchdog.
+   _syslog.print(_syslog.ERROR,"tmr.wdclr() not yet implemented")
 end
-]]
 
 table.insert(node.modules,'tmr')
 

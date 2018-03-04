@@ -131,8 +131,8 @@ end
       
 tmr.resume_all = function()       -- Resume all timers.
    for i,tm in pairs(tmr._list) do
-      if tm._state == tm._SUSPENDED then
-         tm._state = tm._ACTIVE
+      if tm._state == tmr._SUSPENDED then
+         tm._state = tmr._ACTIVE
          tm._timeout = tmr.uptime() + tm._interval       -- recalculate _timeout
       end
    end
@@ -140,8 +140,8 @@ end
 
 tmr.suspend_all = function() -- Suspend all currently armed timers.
    for i,tm in pairs(tmr._list) do
-      if tm._state == tm._ACTIVE then
-         tm._state = tm._SUSPENDED
+      if tm._state == tmr._ACTIVE then
+         tm._state = tmr._SUSPENDED
       end
    end
 end

@@ -18,7 +18,7 @@
 -- 2018/02/25: 0.0.2: dofile() redefined so ./ and /usr/local/lib/nodemcu paths are considered (easier dev process)
 -- 2018/02/24: 0.0.1: first version: node, tmr, file, gpio and rtctime with very reduced functionality
 
-VERSION = '0.0.3'
+VERSION = '0.0.4'
 
 dofile = function(fn)                       -- we redefine so we extend it in manners we need 
    for i,k in pairs({'./','/usr/local/lib/nodemcu/'}) do

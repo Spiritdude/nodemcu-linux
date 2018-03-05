@@ -12,8 +12,6 @@
 -- History:
 -- 2018/03/05: 0.0.1: first version, just a skeleton
 
-print("net-node.lua")
-
 Net = require('luanode.net')
 
 net = {

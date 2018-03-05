@@ -53,7 +53,7 @@ _syslog.print(_syslog.INFO,"loading modules ('node' and 'tmr' already loaded)") 
 dofile("modules/file/file.lua")
 dofile("modules/gpio/gpio.lua")
 dofile("modules/i2c/i2c.lua")
---dofile("modules/net/net.lua")
+dofile("modules/net/net.lua")
 dofile("modules/rtctime/rtctime.lua")
 dofile("modules/sjson/sjson.lua")
 

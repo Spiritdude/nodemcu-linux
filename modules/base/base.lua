@@ -77,7 +77,7 @@ _syslog = {                -- internal syslog facility
 
 print = function(...)
    local o = ""
-   for i,v in ipairs({...}) do
+   for i,v in pairs({...}) do
       --io.write(": "..tostring(i)..tostring(v).."\n")
       o = o .. (i > 1 and " " or "")
       o = o .. tostring(v)

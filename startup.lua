@@ -39,14 +39,46 @@ if true then         -- brief tmr.* testing
    end)
 end
 
+if not _sysinfo.architecture:match("^arm") then
+   local ffi = require("ffi")                   -- testing ffi (disabled for ARM-based CPU, as luaffifb seems broken there)
+   if ffi then
+      ffi.cdef[[
+      int printf(const char *fmt, ...);
+      ]]
+      ffi.C.printf("ffi: Hello %s!\n", "world")
+   end
+end
+
+if net and net.createConnection then
+   local srv = net.createConnection(net.TCP, 0)
+   srv:on("receive", function(sck, c) print(": ",c) end)
+   srv:on("connection", function(sck, c)
+      -- 'Connection: close' rather than 'Connection: keep-alive' to have server 
+      -- initiate a close of the connection after final response (frees memory 
+      -- earlier here), https://tools.ietf.org/html/rfc7230#section-6.6 
+      sck:send("GET /get HTTP/1.1\r\nHost: httpbin.org\r\nConnection: close\r\nAccept: */*\r\n\r\n")
+   end)
+   srv:connect(80,"httpbin.org")
+end
+
+if net and net.createServer then 
+   local sv = net.createServer(net.TCP, 30)
+   if sv then
+      sv:listen(10080, function(conn)
+         conn:on("receive",function(sck,data) 
+            print("==server received",data)
+         end)
+         conn:on("sent",function(sck)
+            print("sent received, now closing",sck,conn)
+            sck:close()
+         end)
+         conn:send("HTTP/1.0 200 OK\r\nConnection: close\r\n\r\nHello world! "..tmr.uptime())
+      end)
+   end
+end
+
 if file.exists("cpu/main.lua") then          -- NodeMCU Shell arround, if so run `cpu` command
    dofile("cpu/main.lua")("cpu")
 end
 
-local ffi = require("ffi")                   -- testing ffi
-if ffi then
-   ffi.cdef[[
-   int printf(const char *fmt, ...);
-   ]]
-   ffi.C.printf("ffi: Hello %s!\n", "world")
-end
+

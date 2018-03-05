@@ -47,9 +47,9 @@ backup::
 	cd ..; tar cfz ${NAME}-${DATE}.tar.gz '--exclude=fw/*' ${NAME}; scp ${NAME}-${DATE}.tar.gz backup:Backup/; mv ${NAME}-${DATE}.tar.gz ~/Backup/; 
 
 dist::
-	cd ..; rsync -avP ${NAME} "--exclude=fw/*" opl1:Projects
-	cd ..; rsync -avP ${NAME} "--exclude=fw/*" npn1:Projects
-	cd ..; rsync -avP ${NAME} "--exclude=fw/*" opz1:Projects
+	cd ..; rsync -avP ${NAME} "--exclude=fw/*" "--exclude=LuaNode/*" opl1:Projects
+	cd ..; rsync -avP ${NAME} "--exclude=fw/*" "--exclude=LuaNode/*" npn1:Projects
+	cd ..; rsync -avP ${NAME} "--exclude=fw/*" "--exclude=LuaNode/*" opz1:Projects
 
 edit::
 	dee4 nodemcu *.lua modules/*/*.lua Makefile README.md

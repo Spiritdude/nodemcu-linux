@@ -26,7 +26,7 @@ Check out the [NodeMCU/Linux Wiki](https://github.com/Spiritdude/nodemcu-linux/w
 - `math`: built-in
 - `sjson`: built-in with `lunajson`
 
-running with Lua 5.1 (`lua5.1`), specifically the [LuaNode](https://github.com/ignacio/LuaNode) extension with `ffi` support.
+running with Lua 5.1 with the [LuaNode](https://github.com/ignacio/LuaNode) (`luanode`) extension with `ffi` support.
 
 ## Todo
 - implement **all** base modules **completely** and document it properly

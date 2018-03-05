@@ -1,4 +1,5 @@
-#!/usr/bin/lua5.1
+#!/usr/bin/luanode
+--#!/usr/bin/lua5.1
 --#!/usr/bin/luajit
 
 -- == NodeMCU/Linux ==
@@ -14,6 +15,7 @@
 --    lua5.1 requires 3rd party luaffifb for ffi(), and it does function(...) arg set
 --
 -- History:
+-- 2018/03/05: 0.0.5: luanode tests: timers work fine, luanode.net not yet used
 -- 2018/02/27: 0.0.3: 'nodemcu' takes arguments and are executed
 -- 2018/02/25: 0.0.2: dofile() redefined so ./ and /usr/local/lib/nodemcu paths are considered (easier dev process)
 -- 2018/02/24: 0.0.1: first version: node, tmr, file, gpio and rtctime with very reduced functionality
@@ -27,8 +29,14 @@ dofile = function(fn)                       -- we redefine so we extend it in ma
          if tmr and _syslog then       -- might not be available yet
             _syslog.print(_syslog.INFO,"dofile "..k..fn)
          end
-         local f = assert(loadfile(k..fn))
-         return f()
+         -- running as luanode and is there a <file>-node.lua version? then consider it ...
+         if arg[-1]:match("luanode") and io.open(k..fn:gsub(".lua","-node.lua")) then
+            local f = assert(loadfile(k..fn:gsub(".lua","-node.lua")))
+            return f()
+         else 
+            local f = assert(loadfile(k..fn))
+            return f()
+         end
       end
    end
    _syslog.print(_syslog.ERROR,"file "..fn.." not found execute")
@@ -126,22 +134,41 @@ if #arg >= 1 then
    end
 else 
    --print("== Lua console started (CTRL-C and then RETURN will exit console)")
-   while true do
-      io.write("> ")
-      local s = io.read()
-      local f = loadstring(s)
-      local r
-      if type(f)=='function' then
-         r = f()
-      else
-         r = f
-      end
-      if r then
-         r = tostring(r)
-         if r:match("%n$") then
-            io.write("> "..r)
+   if arg[-1]:match("luanode") then
+      require("luanode.tty")
+      local stdin = luanode.tty.ReadStream(Stdio.stdinFD)
+      local stdout = luanode.tty.WriteStream(Stdio.stdoutFD)
+      stdout:write("> ")
+      stdin:on("data",function(self,s)
+         local f = loadstring(s)
+         local r
+         if type(f)=='function' then
+            r = f()
          else
-            io.write(": "..r.."\n")
+            r = f
+         end
+         stdout:write("> ")
+      end)
+      stdin:resume()
+      process:loop()
+   else 
+      while true do
+         io.write("> ")
+         local s = io.read()
+         local f = loadstring(s)
+         local r
+         if type(f)=='function' then
+            r = f()
+         else
+            r = f
+         end
+         if r then
+            r = tostring(r)
+            if r:match("%n$") then
+               io.write("> "..r)
+            else
+               io.write(": "..r.."\n")
+            end
          end
       end
    end

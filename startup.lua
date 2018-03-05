@@ -21,12 +21,15 @@ print("file.stat() with json",sjson.encode(file.stat("README.md")))
 local remain, used, total = file.fsinfo()
 print("file.fsinfo()",string.format("remain %.3fMiB, used %.3fMiB, total %.3fMiB",remain/1024,used/1024,total/1024))
 
-if true then
+if true then         -- brief tmr.* testing
    local n = 1
    tmr.create():alarm(1*1000,tmr.ALARM_AUTO,function(t)
       print("ping",tmr.uptime(),n)
       if n==10 then
          tmr.suspend_all()
+         tmr.create():alarm(3*1000,tmr.ALARM_SINGLE,function(t)
+            print("once",tmr.uptime())
+         end)
       end
       n = n + 1
    end)

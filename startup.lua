@@ -24,21 +24,29 @@ print("file.fsinfo()",string.format("remain %.3fMiB, used %.3fMiB, total %.3fMiB
 if true then         -- brief tmr.* testing
    local n = 1
    tmr.create():alarm(1*1000,tmr.ALARM_AUTO,function(t)
-      print("ping",tmr.uptime(),n)
-      if n==10 then
+      print("tmr-test: ping",tmr.uptime(),n)
+      if n==5 then
          tmr.suspend_all()
          tmr.create():alarm(3*1000,tmr.ALARM_SINGLE,function(t)
-            print("once",tmr.uptime())
+            print("tmr-test: once",tmr.uptime())
          end)
       end
       n = n + 1
    end)
    tmr.create():alarm(1.5*1000,tmr.ALARM_AUTO,function(t)
-      print("pong",tmr.uptime())
+      print("tmr-test: pong",tmr.uptime())
       t:unregister()
    end)
 end
 
 if file.exists("cpu/main.lua") then          -- NodeMCU Shell arround, if so run `cpu` command
    dofile("cpu/main.lua")("cpu")
+end
+
+local ffi = require("ffi")                   -- testing ffi
+if ffi then
+   ffi.cdef[[
+   int printf(const char *fmt, ...);
+   ]]
+   ffi.C.printf("ffi: Hello %s!\n", "world")
 end

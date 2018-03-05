@@ -4,11 +4,19 @@ DATE=`date +%F`
 all::
 	@echo "make requirements install deinstall backup"
 
-requirements::	lua lua_modules luaffi
+requirements::	lua luanode lua_modules luaffi
 
 lua::
-	sudo apt -y install luajit lua5.1 luarocks lua5.1-dev
+	sudo apt -y install luajit lua5.1 luarocks lua5.1-dev 
 
+luanode:
+	sudo apt -y install cmake libboost-dev libboost-system-dev libboost-date-time-dev libboost-thread-dev
+	rm -rf LuaNode
+	git clone https://github.com/ignacio/LuaNode
+	cd LuaNode/build; cmake ..; make
+	sudo cp LuaNode/build/luanode /usr/bin/
+	rm -rf LuaNode
+	
 lua_modules::
 	sudo luarocks install luafilesystem
 	sudo luarocks install lua-periphery
@@ -19,6 +27,7 @@ lua_modules::
 	sudo luarocks install luaunit
 
 luaffi::
+	sudo rm -rf luaffifb
 	git clone https://github.com/facebook/luaffifb
 	cd luaffifb; sudo luarocks make
 	sudo rm -rf luaffifb
@@ -26,7 +35,6 @@ luaffi::
 install::
 	install nodemcu /usr/local/bin/nodemcu
 	mkdir -p /usr/local/lib/nodemcu
-	#install -d modules misc | (cd /usr/local/lib/nodemcu/ && tar xf -)
 	tar cf - modules misc | (cd /usr/local/lib/nodemcu/ && tar xf -)
 
 deinstall::

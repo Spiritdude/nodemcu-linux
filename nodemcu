@@ -1,5 +1,5 @@
-#!/usr/bin/lua5.1
---#!/usr/bin/luanode
+#!/usr/bin/luanode
+--#!/usr/bin/lua5.1
 --#!/usr/bin/luajit
 
 -- == NodeMCU/Linux ==
@@ -63,6 +63,9 @@ table.insert(node.modules,"bit")
 
 struct = require("struct")
 table.insert(node.modules,"struct")
+
+--ffi = require("ffi")
+--table.insert(node.modules,"ffi")
 
 _syslog.print(_syslog.INFO,"modules bit, struct built-in added")
 
@@ -173,4 +176,3 @@ else
       end
    end
 end
-

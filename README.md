@@ -17,7 +17,7 @@ The idea is to implement majority of the base modules in Lua itself, with few ho
 
 Check out the [NodeMCU/Linux Wiki](https://github.com/Spiritdude/nodemcu-linux/wiki) with current state of the base modules, an incomplete summary:
 - `node`: mostly implemented
-- `tmr`: mostly implemented but not yet functional due lack of task scheduler
+- `tmr`: mostly implemented but not much tested
 - `file`: basic operations implemented but mostly untested
 - `rtctime`: partially implemented
 - `gpio`: partially implemented but entirely untested
@@ -26,7 +26,7 @@ Check out the [NodeMCU/Linux Wiki](https://github.com/Spiritdude/nodemcu-linux/w
 - `math`: built-in
 - `sjson`: built-in with `lunajson`
 
-running with Lua 5.1 (`lua5.1`)
+running with Lua 5.1 (`lua5.1`), specifically the [LuaNode](https://github.com/ignacio/LuaNode) extension with `ffi` support.
 
 ## Todo
 - implement **all** base modules **completely** and document it properly

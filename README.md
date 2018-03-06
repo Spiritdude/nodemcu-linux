@@ -19,6 +19,7 @@ Check out the [NodeMCU/Linux Wiki](https://github.com/Spiritdude/nodemcu-linux/w
 - `node`: mostly implemented
 - `tmr`: mostly implemented but not much tested
 - `file`: basic operations implemented but mostly untested
+- `net`: partially implemented but not much tested
 - `rtctime`: partially implemented
 - `gpio`: partially implemented but entirely untested
 - `i2c`: code skeleton, far away to be functional

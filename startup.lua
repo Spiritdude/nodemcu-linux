@@ -53,7 +53,10 @@ if net and net.createConnection then
    local host = "httpbin.org"
    print("net-test: connecting to",host)
    local srv = net.createConnection(net.TCP, 0)
-   srv:on("receive", function(sck, c) print("http-received:",c) end)
+   srv:on("receive",function(sck,c) 
+      print("net-test: http-received:") 
+      c:gsub("([^\n]+)\n",function(s) print("|",s) end)
+      end)
    srv:on("connection", function(sck, c)
       -- 'Connection: close' rather than 'Connection: keep-alive' to have server 
       -- initiate a close of the connection after final response (frees memory 
@@ -70,10 +73,11 @@ if net and net.createServer then
    if sv then
       sv:listen(port,function(conn)
          conn:on("receive",function(sck,data) 
-            print("web server received",data)
+            print("net-test: web server received")
+            data:gsub("([^\n]+)\n",function(s) print("|",s) end)
          end)
          conn:on("sent",function(sck)
-            print("web-server 'sent'-event received, now closing",sck,conn)
+            print("net-test: web-server 'sent'-event received, now closing",sck,conn)
             sck:close()
          end)
          conn:send("HTTP/1.0 200 OK\r\nConnection: close\r\n\r\nHello world! "..tmr.uptime())

@@ -36,12 +36,13 @@ _tasker = {             -- NOTE: not yet useable, needs to be tested
          end
       end
    end,
-   new = function(f,p) 
+   new = function(f,p,opts) 
       p = p or _tasker.MEDIUM
       table.insert(_list,{ 
          prio = p, 
          state = _tasker.ACTIVE, 
-         cf = coroutine.create(function() local res = f() coroutine.yield(res) end) 
+         --cf = coroutine.create(function() local res = f() coroutine.yield(res) end) 
+         cf = coroutine.create(f) 
       })
       return #_list
    end,

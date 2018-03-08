@@ -50,26 +50,30 @@ if not _sysinfo.architecture:match("^arm") then
 end
 
 if net and net.createConnection then
+   local host = "httpbin.org"
+   print("net-test: connecting to",host)
    local srv = net.createConnection(net.TCP, 0)
-   srv:on("receive", function(sck, c) print(": ",c) end)
+   srv:on("receive", function(sck, c) print("http-received:",c) end)
    srv:on("connection", function(sck, c)
       -- 'Connection: close' rather than 'Connection: keep-alive' to have server 
       -- initiate a close of the connection after final response (frees memory 
       -- earlier here), https://tools.ietf.org/html/rfc7230#section-6.6 
       sck:send("GET /get HTTP/1.1\r\nHost: httpbin.org\r\nConnection: close\r\nAccept: */*\r\n\r\n")
    end)
-   srv:connect(80,"httpbin.org")
+   srv:connect(80,host)
 end
 
 if net and net.createServer then 
+   local port = 10080
+   print("net-test: basic http server started on port",port)
    local sv = net.createServer(net.TCP, 30)
    if sv then
-      sv:listen(10080, function(conn)
+      sv:listen(port,function(conn)
          conn:on("receive",function(sck,data) 
-            print("==server received",data)
+            print("web server received",data)
          end)
          conn:on("sent",function(sck)
-            print("sent received, now closing",sck,conn)
+            print("web-server 'sent'-event received, now closing",sck,conn)
             sck:close()
          end)
          conn:send("HTTP/1.0 200 OK\r\nConnection: close\r\n\r\nHello world! "..tmr.uptime())

@@ -20,23 +20,20 @@
 -- 2018/02/25: 0.0.2: dofile() redefined so ./ and /usr/local/lib/nodemcu paths are considered (easier dev process)
 -- 2018/02/24: 0.0.1: first version: node, tmr, file, gpio and rtctime with very reduced functionality
 
-VERSION = '0.0.4'
+VERSION = '0.0.5'
 
 dofile = function(fn)                       -- we redefine so we extend it in manners we need 
    for i,k in pairs({'./','/usr/local/lib/nodemcu/'}) do
       if io.open(k..fn) then
-         io.close()
-         if tmr and _syslog then       -- might not be available yet
-            _syslog.print(_syslog.INFO,"dofile "..k..fn)
-         end
-         -- running as luanode and is there a <file>-node.lua version? then consider it ...
+         local fnf = k..fn
          if arg[-1]:match("luanode") and io.open(k..fn:gsub(".lua","-node.lua")) then
-            local f = assert(loadfile(k..fn:gsub(".lua","-node.lua")))
-            return f()
-         else 
-            local f = assert(loadfile(k..fn))
-            return f()
+            fnf = k..fn:gsub(".lua","-node.lua")
          end
+         if tmr and _syslog then       -- might not be available yet
+            _syslog.print(_syslog.INFO,"dofile "..fnf)
+         end
+         local f = assert(loadfile(fnf))
+         return f()
       end
    end
    _syslog.print(_syslog.ERROR,"file "..fn.." not found execute")

@@ -48,27 +48,15 @@ running with Lua 5.1 with the [LuaNode](https://github.com/ignacio/LuaNode) (`lu
 ## Usage
 
 The main executable is `nodemcu`, when executed it "boots" NodeMCU/Linux and executes `init.lua` if it resides in the same directory.
-Within the `nodemcu-linux/` directory you cloned resides a default `init.lua` which executes `startup.lua` which performs some basic tests of various modules:
+
+An example with a NanoPi Neo:
 
 ```
 % nodemcu
-NodeMCU/Linux 0.0.6 powered by Lua 5.1, Device ID: 3255662 / 0x31ad6e
-   x86_64 Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz (8 cores, 800-3500MHz)
+NodeMCU/Linux 0.0.6 powered by Lua 5.1, Device ID: 4310175 / 0x41c49f
+   armv7l (4 cores, 240-1200MHz)
    modules: node tmr file gpio i2c net rtctime sjson bit struct math
-starting up...
-tmr.now() 26137
-tmr.time() 0
-tmr.uptime() 0.026159048080444
-rtctime 2018/03/09 15:27:16 UTC
-node.chipid() 3255662 0x31ad6e
-node.flashid() e769a2e7-a4f8-4c2c-86dc-b0a35cc592ef
-node.heap() 777887744 767147KiB
-file.list() init.lua(64) misc(4096) nodemcu(6766) LICENSE(1082) Makefile(1571) ..(4096) fw(4096) imgs(4096) README.md(4131) tests(4096) startup.lua(3169) examples(4096) LuaNode(4096) modules(4096) .git(4096) .(4096) 
-file.stat() with json {"time":{"min":49,"wday":5,"day":9,"yday":67,"year":2018,"sec":33,"hour":9,"mon":3},"is_arch":false,"name":"README.md","is_sys":false,"is_rdonly":false,"is_hidden":false,"is_dir":false,"size":4131}
-file.fsinfo() remain 16033.281MiB, used 196257.359MiB, total 223675.238MiB
-ffi-test: Hello world!
-net-test: connecting to httpbin.org
-...
+   cpu freq table [MHz]: 60, 120, 240, 312, 408, 480, 504, 528, 576, 600, 624, 648, 672, 720, 768, 816, 864, 912, 960, 1010, 1060, 1100, 1150, 1200, 1250, 1300, 1340, 1440, 1540
 > 
 ```
 
@@ -94,26 +82,45 @@ NodeMCU/Linux 0.0.6 USAGE: nodemcu {[options] .. } {[file1] .. }
 
 % nodemcu -v
 I [0.000] loading modules ('node' and 'tmr' already loaded)
-I [0.000] dofile ./modules/file/file.lua
-I [0.001] dofile ./modules/gpio/gpio.lua
-I [0.001] dofile ./modules/i2c/i2c.lua
-I [0.002] i2c: 7 interface(s) found: /dev/i2c-0 /dev/i2c-1 /dev/i2c-2 /dev/i2c-3 /dev/i2c-4 /dev/i2c-5 /dev/i2c-6
-I [0.002] dofile ./modules/net/net-node.lua
-I [0.004] dofile ./modules/rtctime/rtctime.lua
-I [0.004] dofile ./modules/sjson/sjson.lua
-I [0.007] modules bit, struct built-in added
-I [0.008] module math added
-NodeMCU/Linux 0.0.6 powered by Lua 5.1, Device ID: 3255662 / 0x31ad6e
-   x86_64 Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz (8 cores, 800-3500MHz)
+I [0.001] dofile /usr/local/lib/nodemcu/modules/file/file.lua
+I [0.004] dofile /usr/local/lib/nodemcu/modules/gpio/gpio.lua
+I [0.007] dofile /usr/local/lib/nodemcu/modules/i2c/i2c.lua
+I [0.009] i2c: 3 interface(s) found: /dev/i2c-0 /dev/i2c-1 /dev/i2c-2
+I [0.009] dofile /usr/local/lib/nodemcu/modules/net/net-node.lua
+I [0.024] dofile /usr/local/lib/nodemcu/modules/rtctime/rtctime.lua
+I [0.025] dofile /usr/local/lib/nodemcu/modules/sjson/sjson.lua
+I [0.042] modules bit, struct built-in added
+I [0.043] module math added
+NodeMCU/Linux 0.0.6 powered by Lua 5.1, Device ID: 4310175 / 0x41c49f
+   armv7l (4 cores, 240-1200MHz)
    modules: node tmr file gpio i2c net rtctime sjson bit struct math
-I [0.014] execute init.lua
-I [0.014] dofile ./init.lua
-I [0.015] dofile ./startup.lua
+   cpu freq table [MHz]: 60, 120, 240, 312, 408, 480, 504, 528, 576, 600, 624, 648, 672, 720, 768, 816, 864, 912, 960, 1010, 1060, 1100, 1150, 1200, 1250, 1300, 1340, 1440, 1540
+> 
+```
+
+Within the `nodemcu-linux/` directory you cloned resides a default `init.lua` which executes `startup.lua` which performs some basic tests of various modules:
+
+```
+NodeMCU/Linux 0.0.6 powered by Lua 5.1, Device ID: 4310175 / 0x41c49f
+   armv7l (4 cores, 240-1200MHz)
+   modules: node tmr file gpio i2c net rtctime sjson bit struct math
+   cpu freq table [MHz]: 60, 120, 240, 312, 408, 480, 504, 528, 576, 600, 624, 648, 672, 720, 768, 816, 864, 912, 960, 1010, 1060, 1100, 1150, 1200, 1250, 1300, 1340, 1440, 1540
 starting up...
-tmr.now() 18914
+tmr.now() 67997
 tmr.time() 0
-tmr.uptime() 0.018966197967529
-rtctime 2018/03/09 15:33:12 UTC
+tmr.uptime() 0.068331003189087
+rtctime 2018/03/09 15:57:48 UTC
+node.chipid() 4310175 0x41c49f
+node.flashid() 9a463503-3ec8-4cb9-aa50-aaaeae3a9e97
+node.heap() 150806528 148724KiB
+file.list() init.lua(64) misc(4096) nodemcu(6818) LICENSE(1082) .git(4096) ..(4096) fw(4096) imgs(4096) README.md(5334) modules(4096) startup.lua(3169) tests(4096) LuaNode(4096) Makefile(1571) examples(4096) .(4096) 
+file.stat() with json {"time":{"min":37,"wday":5,"day":9,"yday":67,"year":2018,"sec":55,"hour":15,"mon":3},"is_arch":false,"name":"README.md","is_sys":false,"is_rdonly":false,"is_hidden":false,"is_dir":false,"size":5334}
+file.fsinfo() remain 21506.816MiB, used 7921.750MiB, total 29744.812MiB
+net-test: connecting to httpbin.org
+net-test: basic http server started on port 10080
+> net-test: http-received:
+| HTTP/1.1 200 OK
+| Connection: close
 ...
 ..
 

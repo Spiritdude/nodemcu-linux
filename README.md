@@ -101,6 +101,7 @@ NodeMCU/Linux 0.0.6 powered by Lua 5.1, Device ID: 4310175 / 0x41c49f
 Within the `nodemcu-linux/` directory you cloned resides a default `init.lua` which executes `startup.lua` which performs some basic tests of various modules:
 
 ```
+% nodemcu
 NodeMCU/Linux 0.0.6 powered by Lua 5.1, Device ID: 4310175 / 0x41c49f
    armv7l (4 cores, 240-1200MHz)
    modules: node tmr file gpio i2c net rtctime sjson bit struct math

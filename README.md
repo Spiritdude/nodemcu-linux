@@ -7,8 +7,8 @@
 **NodeMCU/Linux** aims to implement the NodeMCU API as known by [NodeMCU/ESP8266](https://github.com/nodemcu/nodemcu-firmware) or "NodeMCU firmware", to additionally support
 
 - **Raspberry Pi** (EUR 35) and **RPi Zero** (EUR 5-10) running [Raspbian](https://www.raspberrypi.org/downloads/raspbian/)
-- **NanoPi series**, like NanoPi Neo (EUR 8-30) with Allwinner H2 & H3 running [Armbian](https://armbian.org)
-- **Orange Pi**, like Orange Pi Zero, Orange Pi Lite (EUR 6-30) series with Allwinner H2 & H3 running [Armbian](https://armbian.org)
+- **NanoPi series**, like **NanoPi Neo** (EUR 8-30) with Allwinner H3 running [Armbian](https://armbian.org)
+- **Orange Pi**, like **Orange Pi Zero**, **Orange Pi Lite** (EUR 6-30) series with Allwinner H2+ & H3 running [Armbian](https://armbian.org)
 - essentially any device which runs a Debian-based Linux distro, and preferably with GPIO, I2C, SPI facility
 
 The idea is to implement majority of the base modules in Lua itself, with few hooks with FFI (either `luajit` or `luaffifb` module). 

@@ -75,7 +75,7 @@ _syslog = {                -- internal syslog facility
       local i = table.remove(t,1)
       if _syslog._verbose == 0 and i == _syslog.INFO then
          return
-      elseif _syslog._verbose <= 1 and (i == _syslog.INFO or i == _syslog.WARN) then
+      elseif _syslog._verbose <= 1 and i == _syslog.WARN then
          return
       else
          print(i:match("(%w)"),string.format("[%.3f]",tmr.uptime()),unpack(t))

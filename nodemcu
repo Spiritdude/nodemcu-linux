@@ -77,7 +77,8 @@ if args.help then
    options:
       -v or -vv         increase verbosity
       --verbose=<n>     define verbosity n = 0..10
-      --help            print this
+      -h                print this usage help
+      --help               "           "
       --version         display version and exit
       
    examples:

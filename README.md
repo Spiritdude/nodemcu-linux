@@ -47,44 +47,75 @@ running with Lua 5.1 with the [LuaNode](https://github.com/ignacio/LuaNode) (`lu
 
 ## Usage
 
-The main executable is `nodemcu`, e.g. running on an Orange Pi Lite:
+The main executable is `nodemcu`:
 
 ```
 % nodemcu
-I [0.000] loading modules ('node' and 'tmr' already loaded)
-I [0.001] dofile ./modules/file/file.lua
-I [0.006] dofile ./modules/gpio/gpio.lua
-I [0.011] dofile ./modules/i2c/i2c.lua
-I [0.013] i2c: 2 interface(s) found: /dev/i2c-0 /dev/i2c-1
-I [0.014] dofile ./modules/rtctime/rtctime.lua
-I [0.016] dofile ./modules/sjson/sjson.lua
-I [0.037] modules bit, struct built-in added
-I [0.038] module math added
-NodeMCU/Linux 0.0.3 powered by Lua 5.1, Device ID: 8773060 / 0x85ddc4
-   armv7l (4 cores, 480-1200MHz)
-   modules: node tmr file gpio i2c rtctime sjson bit struct math
-   cpu freq table [MHz]: 60, 120, 240, 312, 408, 480, 504, 528, 576, 600, 624, 648, 672, 720, 768, 816, 864, 912, 960, 1010, 1060, 1100, 1150, 1200, 1250, 1300, 1340, 1440, 1540
-I [0.058] execute init.lua
-I [0.059] dofile ./init.lua
-I [0.059] dofile ./startup.lua
+NodeMCU/Linux 0.0.6 powered by Lua 5.1, Device ID: 3255662 / 0x31ad6e
+   x86_64 Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz (8 cores, 800-3500MHz)
+   modules: node tmr file gpio i2c net rtctime sjson bit struct math
 starting up...
-tmr.now() 60290
+tmr.now() 26137
 tmr.time() 0
-tmr.uptime() 0.060518026351929
-rtctime 2018/03/02 13:41:33 UTC
-node.chipid() 8773060 0x85ddc4
-node.flashid() e4909995-cb78-4f89-bca8-d00bb3b914e1
-node.heap() 99151872 97782KiB
-file.list() init.lua(64) misc(4096) Makefile(1276) LICENSE(1082) ..(4096) fw(4096) imgs(4096) README.md(3666) .git(4096) startup.lua(1063) modules(4096) nodemcu(4024) tests(4096) examples(4096) .(4096) 
-file.stat() with json {"time":{"min":28,"wday":4,"day":1,"yday":59,"year":2018,"sec":44,"hour":8,"mon":3},"is_arch":false,"name":"README.md","is_sys":false,"is_rdonly":false,"is_hidden":false,"is_dir":false,"size":3666}
-file.fsinfo() remain 8738.391MiB, used 20639.449MiB, total 29691.949MiB
+tmr.uptime() 0.026159048080444
+rtctime 2018/03/09 15:27:16 UTC
+node.chipid() 3255662 0x31ad6e
+node.flashid() e769a2e7-a4f8-4c2c-86dc-b0a35cc592ef
+node.heap() 777887744 767147KiB
+file.list() init.lua(64) misc(4096) nodemcu(6766) LICENSE(1082) Makefile(1571) ..(4096) fw(4096) imgs(4096) README.md(4131) tests(4096) startup.lua(3169) examples(4096) LuaNode(4096) modules(4096) .git(4096) .(4096) 
+file.stat() with json {"time":{"min":49,"wday":5,"day":9,"yday":67,"year":2018,"sec":33,"hour":9,"mon":3},"is_arch":false,"name":"README.md","is_sys":false,"is_rdonly":false,"is_hidden":false,"is_dir":false,"size":4131}
+file.fsinfo() remain 16033.281MiB, used 196257.359MiB, total 223675.238MiB
+ffi-test: Hello world!
+net-test: connecting to httpbin.org
+...
 > 
 ```
 
-The `>` is the prompt, awaiting console Lua input - abort with CTRL-C twice.
-
+The `>` is the prompt, awaiting console Lua input - abort with CTRL-C.
 
 ```
+% nodemcu --help
+NodeMCU/Linux 0.0.6 USAGE: nodemcu {[options] .. } {[file1] .. }
+   options:
+      -v or -vv         increase verbosity
+      --verbose=<n>     define verbosity n = 0..10
+      -h                print this usage help
+      --help               "           "
+      --version         display version and exit
+      
+   examples:
+      nodemcu                    boot and execute init.lua and enter Lua console
+      nodemcu --version          
+      nodemcu --help
+      nodemcu -vvv 
+      nodemcu --verbose=3
+      nodemcu test.lua           boot and execute test.lua and exit
+
+% nodemcu -v
+I [0.000] loading modules ('node' and 'tmr' already loaded)
+I [0.000] dofile ./modules/file/file.lua
+I [0.001] dofile ./modules/gpio/gpio.lua
+I [0.001] dofile ./modules/i2c/i2c.lua
+I [0.002] i2c: 7 interface(s) found: /dev/i2c-0 /dev/i2c-1 /dev/i2c-2 /dev/i2c-3 /dev/i2c-4 /dev/i2c-5 /dev/i2c-6
+I [0.002] dofile ./modules/net/net-node.lua
+I [0.004] dofile ./modules/rtctime/rtctime.lua
+I [0.004] dofile ./modules/sjson/sjson.lua
+I [0.007] modules bit, struct built-in added
+I [0.008] module math added
+NodeMCU/Linux 0.0.6 powered by Lua 5.1, Device ID: 3255662 / 0x31ad6e
+   x86_64 Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz (8 cores, 800-3500MHz)
+   modules: node tmr file gpio i2c net rtctime sjson bit struct math
+I [0.014] execute init.lua
+I [0.014] dofile ./init.lua
+I [0.015] dofile ./startup.lua
+starting up...
+tmr.now() 18914
+tmr.time() 0
+tmr.uptime() 0.018966197967529
+rtctime 2018/03/09 15:33:12 UTC
+...
+..
+
 % cd tests
 % nodemcu file01.lua
 ```

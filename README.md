@@ -47,9 +47,8 @@ running with Lua 5.1 with the [LuaNode](https://github.com/ignacio/LuaNode) (`lu
 
 ## Usage
 
-The main executable is `nodemcu`, when executed it "boot" NodeMCU/Linux and executes `init.lua` if it resides in the same directory.
-
-Within the `nodemcu-linux/` directory you cloned resides a default `init.lua` which executes `startup.lua` which performs some basic tests of various modules.
+The main executable is `nodemcu`, when executed it "boots" NodeMCU/Linux and executes `init.lua` if it resides in the same directory.
+Within the `nodemcu-linux/` directory you cloned resides a default `init.lua` which executes `startup.lua` which performs some basic tests of various modules:
 
 ```
 % nodemcu

@@ -15,12 +15,14 @@
 --    lua5.1 requires 3rd party luaffifb for ffi(), and it does function(...) arg set
 --
 -- History:
+-- 2018/03/09: 0.0.6: parse command-line arguments (options etc)
 -- 2018/03/05: 0.0.5: luanode tests: timers work fine, luanode.net not yet used
 -- 2018/02/27: 0.0.3: 'nodemcu' takes arguments and are executed
 -- 2018/02/25: 0.0.2: dofile() redefined so ./ and /usr/local/lib/nodemcu paths are considered (easier dev process)
 -- 2018/02/24: 0.0.1: first version: node, tmr, file, gpio and rtctime with very reduced functionality
 
-VERSION = '0.0.5'
+APPNAME = "NodeMCU/Linux"
+VERSION = '0.0.6'
 
 dofile = function(fn)                       -- we redefine so we extend it in manners we need 
    for i,k in pairs({'./','/usr/local/lib/nodemcu/'}) do
@@ -41,6 +43,63 @@ dofile = function(fn)                       -- we redefine so we extend it in ma
 end
                                             
 dofile("modules/base/base.lua")
+
+local args = { }
+local k2f = { v = 'verbose', h = "help" }
+local _arg = { }
+
+for k,v in pairs(arg) do               -- parse all command line arguments (including -1 and 0)
+   if k > 0 then
+      if v:match("^-(%w+)$") then            -- single char switch
+         local kx = v:match("^-(%w+)$")
+         for i=1,kx:len() do
+            local a = kx:sub(i,i)
+            args[k2f[a] or a] = (args[k2f[a] or a] or 0) + 1
+         end
+      elseif v:match("^--(%w+)$") then       -- long switch
+         local kx, vx = v:match("^--(%w+)$")
+         args[kx] = args[kx] or 1
+      elseif v:match("^--(%w+)=(.*)$") then  -- key=value assignment
+         local kx, vx = v:match("^--(%w+)=(.*)$")
+         args[kx] = vx
+      else
+         table.insert(_arg,v)
+      end
+   else
+      _arg[k] = v
+   end
+end
+
+arg = _arg
+
+if args.help then 
+   print(APPNAME .. " " .. VERSION .. [[ USAGE: nodemcu {[options] .. } {[file1] .. }
+   options:
+      -v or -vv         increase verbosity
+      --verbose=<n>     define verbosity n = 0..10
+      --help            print this
+      --version         display version and exit
+      
+   examples:
+      nodemcu                    boot and execute init.lua and enter Lua console
+      nodemcu --version          
+      nodemcu --help
+      nodemcu -vvv 
+      nodemcu --verbose=3
+      nodemcu test.lua           boot and execute test.lua and exit
+]])
+   os.exit()
+elseif args.version then
+   print(APPNAME,VERSION)
+   os.exit()
+end
+
+if args.verbose and args.verbose > 3 then
+   print("args:")
+   table.foreach(args,function(k,v) print("\t",k,v) end)
+end
+
+_syslog.verbose(args.verbose or 0)
 
 -- Lua modules
 dofile("modules/node/node.lua")
@@ -97,7 +156,7 @@ if false then
    end
 end
 
-bnr = bnr .. "NodeMCU/Linux "..VERSION.." powered by ".._VERSION..", "..string.format("Device ID: %d / 0x%x",node.chipid(),node.chipid())
+bnr = bnr .. APPNAME.." "..VERSION.." powered by ".._VERSION..", "..string.format("Device ID: %d / 0x%x",node.chipid(),node.chipid())
 bnr = bnr .. "\n   " .. _sysinfo.architecture..(_sysinfo.model_name and " ".._sysinfo.model_name or "").." (".._sysinfo.cpus.." cores"..(_sysinfo.cpu_max_mhz and ", "..int(_sysinfo.cpu_min_mhz).."-"..int(_sysinfo.cpu_max_mhz).."MHz" or "")..")"
 bnr = bnr .. "\n   " .. "modules: "
 for i,v in ipairs(node.modules) do

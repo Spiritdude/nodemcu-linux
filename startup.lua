@@ -45,7 +45,7 @@ if not _sysinfo.architecture:match("^arm") then
       ffi.cdef[[
       int printf(const char *fmt, ...);
       ]]
-      ffi.C.printf("ffi: Hello %s!\n", "world")
+      ffi.C.printf("ffi-test: Hello %s!\n", "world")
    end
 end
 

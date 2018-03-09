@@ -69,10 +69,20 @@ _syslog = {                -- internal syslog facility
    WARN  = "WARN",
    ERROR = "ERROR",
    FATAL = "FATAL",
+   _verbose = 0,
    print = function(...)
       local t = {...}
       local i = table.remove(t,1)
-      print(i:match("(%w)"),string.format("[%.3f]",tmr.uptime()),unpack(t))
+      if _syslog._verbose == 0 and i == _syslog.INFO then
+         return
+      elseif _syslog._verbose <= 1 and (i == _syslog.INFO or i == _syslog.WARN) then
+         return
+      else
+         print(i:match("(%w)"),string.format("[%.3f]",tmr.uptime()),unpack(t))
+      end
+   end,
+   verbose = function(l)
+      _syslog._verbose = tonumber(l)
    end
 }
 

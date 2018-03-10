@@ -60,11 +60,11 @@ NodeMCU/Linux 0.0.6 powered by Lua 5.1, Device ID: 4310175 / 0x41c49f
 > 
 ```
 
-The `>` is the prompt, awaiting console Lua input - abort with CTRL-C.
+The `>` is the prompt of the Lua console - abort with CTRL-C.
 
 ```
 % nodemcu --help
-NodeMCU/Linux 0.0.6 USAGE: nodemcu {[options] .. } {[file1] .. }
+NodeMCU/Linux 0.0.6 USAGE: nodemcu {[options] .. } {[file] .. }
    options:
       -v or -vv         increase verbosity
       --verbose=<n>     define verbosity n = 0..10

@@ -45,22 +45,22 @@ end
 dofile("modules/base/base.lua")
 
 local opts = { }
-local k2f = { v = 'verbose', h = "help", s = 'silent' }
+local k2f = { v = 'verbose', h = 'help', s = 'silent' }
 local _arg = { }
 
 for k,v in pairs(arg) do               -- parse all command line arguments (including -1 and 0)
    if k > 0 then
       if v:match("^%-(%w+)$") then            -- single char switch
-         local kx = v:match("^-(%w+)$")
+         local kx = v:match("^%-(%w+)$")
          for i=1,kx:len() do
             local a = kx:sub(i,i)
             opts[k2f[a] or a] = (opts[k2f[a] or a] or 0) + 1
          end
       elseif v:match("^%-%-([%w%.]+)$") then       -- long switch
-         local kx, vx = v:match("^--([%w%.]+)$")
+         local kx, vx = v:match("^%-%-([%w%.]+)$")
          opts[kx] = opts[kx] or 1
       elseif v:match("^%-%-([%w%.]+)=(.*)$") then  -- key=value assignment
-         local kx, vx = v:match("^--([%w%.]+)=(.*)$")
+         local kx, vx = v:match("^%-%-([%w%.]+)=(.*)$")
          opts[kx] = vx
       else
          table.insert(_arg,v)

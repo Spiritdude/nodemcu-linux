@@ -45,7 +45,7 @@ end
 dofile("modules/base/base.lua")
 
 local opts = { }
-local k2f = { v = 'verbose', h = "help" }
+local k2f = { v = 'verbose', h = "help", s = 'silent' }
 local _arg = { }
 
 for k,v in pairs(arg) do               -- parse all command line arguments (including -1 and 0)
@@ -77,8 +77,8 @@ if opts.help then
    options:
       -v or -vv            increase verbosity
       --verbose=<n>        define verbosity n = 0..10
-      -h                   print this usage help
-      --help                  "           "
+      -h or --help         print this usage help
+      -s or --silent       silent
       --version            display version and exit
       --package.path=<p>   define or add package path, use '+' to add additional path
       
@@ -178,9 +178,11 @@ for i,v in ipairs(node.modules) do
    bnr = bnr .. (i>1 and " " or "") .. v
 end
 
-print(bnr)
-if node._cpufreq then
-   print("   cpu freq table [MHz]: "..table.concat(node._cpufreq,", "))
+if not opts.silent then
+   print(bnr)
+   if node._cpufreq then
+      print("   cpu freq table [MHz]: "..table.concat(node._cpufreq,", "))
+   end
 end
 
 if file.exists("init.lua") then

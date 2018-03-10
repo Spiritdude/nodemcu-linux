@@ -4,5 +4,5 @@ TESTS=$(patsubst %.lua, %.lua.test, $(SOURCES))
 all::	${TESTS}
 
 %.lua.test:	%.lua
-	nodemcu $< 
+	@nodemcu -s $< || echo "$< failed" 
 

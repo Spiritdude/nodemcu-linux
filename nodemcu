@@ -44,24 +44,24 @@ end
                                             
 dofile("modules/base/base.lua")
 
-local args = { }
+local opts = { }
 local k2f = { v = 'verbose', h = "help" }
 local _arg = { }
 
 for k,v in pairs(arg) do               -- parse all command line arguments (including -1 and 0)
    if k > 0 then
-      if v:match("^-(%w+)$") then            -- single char switch
+      if v:match("^%-(%w+)$") then            -- single char switch
          local kx = v:match("^-(%w+)$")
          for i=1,kx:len() do
             local a = kx:sub(i,i)
-            args[k2f[a] or a] = (args[k2f[a] or a] or 0) + 1
+            opts[k2f[a] or a] = (opts[k2f[a] or a] or 0) + 1
          end
-      elseif v:match("^--(%w+)$") then       -- long switch
-         local kx, vx = v:match("^--(%w+)$")
-         args[kx] = args[kx] or 1
-      elseif v:match("^--(%w+)=(.*)$") then  -- key=value assignment
-         local kx, vx = v:match("^--(%w+)=(.*)$")
-         args[kx] = vx
+      elseif v:match("^%-%-([%w%.]+)$") then       -- long switch
+         local kx, vx = v:match("^--([%w%.]+)$")
+         opts[kx] = opts[kx] or 1
+      elseif v:match("^%-%-([%w%.]+)=(.*)$") then  -- key=value assignment
+         local kx, vx = v:match("^--([%w%.]+)=(.*)$")
+         opts[kx] = vx
       else
          table.insert(_arg,v)
       end
@@ -72,14 +72,15 @@ end
 
 arg = _arg
 
-if args.help then 
+if opts.help then 
    print(APPNAME .. " " .. VERSION .. [[ USAGE: nodemcu {[options] .. } {[file1] .. }
    options:
-      -v or -vv         increase verbosity
-      --verbose=<n>     define verbosity n = 0..10
-      -h                print this usage help
-      --help               "           "
-      --version         display version and exit
+      -v or -vv            increase verbosity
+      --verbose=<n>        define verbosity n = 0..10
+      -h                   print this usage help
+      --help                  "           "
+      --version            display version and exit
+      --package.path=<p>   define or add package path, use '+' to add additional path
       
    examples:
       nodemcu                    boot and execute init.lua and enter Lua console
@@ -88,19 +89,22 @@ if args.help then
       nodemcu -vvv 
       nodemcu --verbose=3
       nodemcu test.lua           boot and execute test.lua and exit
+      nodemcu --package.path=+./
 ]])
    os.exit()
-elseif args.version then
+elseif opts.version then
    print(APPNAME,VERSION)
    os.exit()
 end
 
-if args.verbose and args.verbose > 3 then
-   print("args:")
-   table.foreach(args,function(k,v) print("\t",k,v) end)
+if opts.verbose and opts.verbose > 3 then
+   print("opts:")
+   table.foreach(opts,function(k,v) print("\t",k,'=',v) end)
+   print("arg:")
+   table.foreach(arg,function(k,v) print("\t",k,'=',v) end)
 end
 
-_syslog.verbose(args.verbose or 0)
+_syslog.verbose(opts.verbose or 0)
 
 -- Lua modules
 dofile("modules/node/node.lua")
@@ -129,6 +133,16 @@ _syslog.print(_syslog.INFO,"modules bit, struct built-in added")
 if math then
    table.insert(node.modules,"math")
    _syslog.print(_syslog.INFO,"module math added")
+end
+
+if opts['package.path'] then
+   local p = opts['package.path']
+   if p:match("^%+") then
+      package.path = package.path .. ":" .. p:match("^%+(.*)")
+   else
+      package.path = p
+   end
+   _syslog.print(_syslog.INFO,"package.path: "..package.path)
 end
 
 -- gather CPU info

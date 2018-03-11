@@ -38,7 +38,7 @@ dofile = function(fn)                       -- we redefine so we extend it in ma
          return f()
       end
    end
-   _syslog.print(_syslog.ERROR,"file "..fn.." not found execute")
+   _syslog.print(_syslog.ERROR,"file "..fn.." not found to execute")
    return nil
 end
                                             

@@ -10,7 +10,7 @@ lua::
 	sudo apt -y install luajit lua5.1 luarocks lua5.1-dev 
 
 luanode:
-	sudo apt -y install cmake libboost-dev libboost-system-dev libboost-date-time-dev libboost-thread-dev
+	sudo apt -y install cmake libboost-dev libboost-system-dev libboost-date-time-dev libboost-thread-dev libssl-dev
 	rm -rf LuaNode
 	git clone https://github.com/ignacio/LuaNode
 	cd LuaNode/build; cmake ..; make

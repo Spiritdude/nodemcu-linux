@@ -173,7 +173,7 @@ if false then
 end
 
 bnr = bnr .. APPNAME.." "..VERSION.." powered by ".._VERSION..", "..string.format("Device ID: %d / 0x%x",node.chipid(),node.chipid())
-bnr = bnr .. "\n   " .. _sysinfo.architecture..(_sysinfo.model_name and " ".._sysinfo.model_name or "").." (".._sysinfo.cpus.." cores"..(_sysinfo.cpu_max_mhz and ", "..int(_sysinfo.cpu_min_mhz).."-"..int(_sysinfo.cpu_max_mhz).."MHz" or "")..")"
+bnr = bnr .. "\n   " .. _sysinfo.architecture..(_sysinfo.model_name and " ".._sysinfo.model_name or "").." (".._sysinfo.cpus.." core(s)"..(_sysinfo.cpu_max_mhz and ", "..int(_sysinfo.cpu_min_mhz).."-"..int(_sysinfo.cpu_max_mhz).."MHz" or "")..")"
 bnr = bnr .. "\n   " .. "modules: "
 for i,v in ipairs(node.modules) do
    bnr = bnr .. (i>1 and " " or "") .. v

@@ -213,7 +213,7 @@ if #arg >= 1 then
       end
    end
 else 
-   --print("== Lua console started (CTRL-C and then RETURN will exit console)")
+   --print("== Lua console started (CTRL-C will exit console)")
    if arg[-1]:match("luanode") then
       require("luanode.tty")
       local stdin = luanode.tty.ReadStream(Stdio.stdinFD)

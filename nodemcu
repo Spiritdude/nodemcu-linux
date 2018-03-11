@@ -26,11 +26,14 @@ VERSION = '0.0.6'
 
 dofile = function(fn)                       -- we redefine so we extend it in manners we need 
    for i,k in pairs({'./','/usr/local/lib/nodemcu/'}) do
+      local fnf
       if io.open(k..fn) then
-         local fnf = k..fn
-         if arg[-1]:match("luanode") and io.open(k..fn:gsub(".lua","-node.lua")) then
-            fnf = k..fn:gsub(".lua","-node.lua")
-         end
+         fnf = k..fn
+      end
+      if arg[-1]:match("luanode") and io.open(k..fn:gsub("%.lua","-node.lua")) then
+         fnf = k..fn:gsub("%.lua","-node.lua")
+      end
+      if fnf then
          if tmr and _syslog then       -- might not be available yet
             _syslog.print(_syslog.INFO,"dofile "..fnf)
          end

@@ -52,7 +52,7 @@ net.createServer = function()        -- Creates a server.
                   table.remove(self._clients,i)
                end
             end
-         done
+         end
          return self
       end
    }

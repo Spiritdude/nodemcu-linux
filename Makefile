@@ -1,6 +1,9 @@
 NAME="NodeMCU-Linux"
 DATE=`date +%F`
-DEBIAN=$(shell grep -qi 'id\s*=\s*raspbian' /etc/os-release && echo "raspbian" || echo "pure")
+
+DEBIAN=$(shell uname -a | grep -qi raspberry && echo "raspbian" || echo "pure")
+LUANODE=https://github.com/ignacio/LuaNode         # -- original
+LUANODE=https://github.com/Spiritdude/LuaNode      # -- surely works with small patch
 
 all::
 	@echo "make requirements install deinstall backup"
@@ -20,7 +23,7 @@ endif
 luanode:	libssl
 	sudo apt -y install cmake libboost-dev libboost-system-dev libboost-date-time-dev libboost-thread-dev
 	rm -rf LuaNode
-	git clone https://github.com/ignacio/LuaNode
+	git clone ${LUANODE}
 	cd LuaNode/build; cmake ..; make
 	sudo cp LuaNode/build/luanode /usr/bin/
 	rm -rf LuaNode

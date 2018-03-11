@@ -1,5 +1,6 @@
 NAME="NodeMCU-Linux"
 DATE=`date +%F`
+DEBIAN=$(shell uname -a | grep -qi raspberry && echo "raspbian" || echo "pure")
 
 all::
 	@echo "make requirements install deinstall backup"
@@ -9,8 +10,15 @@ requirements::	lua luanode lua_modules luaffi
 lua::
 	sudo apt -y install luajit lua5.1 luarocks lua5.1-dev 
 
-luanode:
-	sudo apt -y install cmake libboost-dev libboost-system-dev libboost-date-time-dev libboost-thread-dev libssl-dev
+libssl::
+ifeq (${DEBIAN},raspbian)
+	sudo apt -y install libssl1.0-dev 
+else
+	sudo apt -y install libssl-dev
+endif
+   
+luanode:	libssl
+	sudo apt -y install cmake libboost-dev libboost-system-dev libboost-date-time-dev libboost-thread-dev
 	rm -rf LuaNode
 	git clone https://github.com/ignacio/LuaNode
 	cd LuaNode/build; cmake ..; make

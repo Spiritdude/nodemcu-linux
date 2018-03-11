@@ -163,6 +163,21 @@ repeat
    end
 until t==nil
 f:close()
+
+-- gather OS info
+local f = io.open('/etc/os-release')
+repeat
+   local t = f:read("*line")
+   if t then
+      local k, v = t:match("([%w_]+)=(.*)$")
+      if v:match('"(.+)"') then
+         v = v:gsub('"(.+)"',function(a) return a end)
+      end
+      _sysinfo['os_'..string.lower(k)] = v
+   end
+until t==nil
+f:close()
+
 --table.foreach(_sysinfo,print)
 
 local bnr = ""

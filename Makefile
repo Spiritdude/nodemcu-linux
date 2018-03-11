@@ -49,7 +49,7 @@ install::
 
 deinstall::
 	sudo rm -rf /usr/local/bin/nodemcu /usr/local/lib/nodemcu/
-
+	sudo rm -f /usr/bin/luanode
 
 # -- developer only
 

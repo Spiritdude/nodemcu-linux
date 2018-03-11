@@ -15,6 +15,7 @@ The idea is to implement majority of the base modules in Lua itself, with few ho
 
 ## Current State
 
+### Modules
 Check out the [NodeMCU/Linux Wiki](https://github.com/Spiritdude/nodemcu-linux/wiki) with current state of the base modules, an incomplete summary:
 - `node`: mostly implemented
 - `tmr`: mostly implemented but not much tested
@@ -29,6 +30,12 @@ Check out the [NodeMCU/Linux Wiki](https://github.com/Spiritdude/nodemcu-linux/w
 
 running with Lua 5.1 with the [LuaNode](https://github.com/ignacio/LuaNode) (`luanode`) extension with `ffi` support.
 
+### Boards
+- NanoPi NEO with Armbian 3.38: BUILDS, BOOTS, STARTUP
+- Orange Pi Lite with Armbian 3.27: BUILDS, BOOTS, STARTUP
+- Orange Pi Zero with Armbian 3.27: BUILDS, BOOTS, STARTUP
+- Raspberry Pi with Raspbian 9.1: BUILDS, BOOTS, STARTUP
+ 
 ## Todo
 - implement **all** base modules **completely** and document it properly
 - thorough tests (automated)

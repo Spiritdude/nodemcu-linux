@@ -1,6 +1,6 @@
 NAME="NodeMCU-Linux"
 DATE=`date +%F`
-DEBIAN=$(shell uname -a | grep -qi raspberry && echo "raspbian" || echo "pure")
+DEBIAN=$(shell grep -qi 'id\s*=\s*raspbian' /etc/os-release && echo "raspbian" || echo "pure")
 
 all::
 	@echo "make requirements install deinstall backup"

@@ -15,6 +15,7 @@
 --    lua5.1 requires 3rd party luaffifb for ffi(), and it does function(...) arg set
 --
 -- History:
+-- 2018/03/11: 0.0.7: '-e' added to execute strings
 -- 2018/03/09: 0.0.6: parse command-line arguments (options etc)
 -- 2018/03/05: 0.0.5: luanode tests: timers work fine, luanode.net not yet used
 -- 2018/02/27: 0.0.3: 'nodemcu' takes arguments and are executed
@@ -22,7 +23,7 @@
 -- 2018/02/24: 0.0.1: first version: node, tmr, file, gpio and rtctime with very reduced functionality
 
 APPNAME = "NodeMCU/Linux"
-VERSION = '0.0.6'
+VERSION = '0.0.7'
 
 dofile = function(fn)                       -- we redefine so we extend it in manners we need 
    for i,k in pairs({'./','/usr/local/lib/nodemcu/'}) do
@@ -48,7 +49,7 @@ end
 dofile("modules/base/base.lua")
 
 local opts = { }
-local k2f = { v = 'verbose', h = 'help', s = 'silent' }
+local k2f = { v = 'verbose', h = 'help', s = 'silent', e = 'execute' }
 local _arg = { }
 
 for k,v in pairs(arg) do               -- parse all command line arguments (including -1 and 0)
@@ -82,6 +83,7 @@ if opts.help then
       --verbose=<n>        define verbosity n = 0..10
       -h or --help         print this usage help
       -s or --silent       silent
+      -e or --execute      execute rest of arguments as code
       --version            display version and exit
       --package.path=<p>   define or add package path, use '+' to add additional path
       
@@ -92,6 +94,7 @@ if opts.help then
       nodemcu -vvv 
       nodemcu --verbose=3
       nodemcu test.lua           boot and execute test.lua and exit
+      nodemcu -e 'table.foreach(_sysinfo,print)'
       nodemcu --package.path=+./
 ]])
    os.exit()
@@ -222,7 +225,11 @@ end
 --table.foreach(arg,print)
 if #arg >= 1 then
    for i=1,#arg do 
-      local f = dofile(arg[i])
+      if opts.execute then
+         f = loadstring(arg[i])
+      else
+         f = dofile(arg[i])
+      end
       if type(f)=='function' then
          f()
       end

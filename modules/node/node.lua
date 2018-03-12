@@ -100,7 +100,12 @@ node.flashid = function()        -- Returns the flash chip ID.
       _ = f:read("*line")        -- get mount point
       f:close()
       local m = _ and _:match("(%S+)") or nil
-      return m and getUUID(m) or nil
+      if m then
+         local id = getUUID(m)
+         if id then 
+            return id
+         end
+      end
    end
 
    local f = io.popen("mount")   -- fallback, check "/" or "/home" or "/boot" and consider it as main disk
@@ -112,13 +117,16 @@ node.flashid = function()        -- Returns the flash chip ID.
             local dev,on,dir = t:match("(%s+)%S+(%s+)")
             if dir and (dir=="/" or dir=="/home" or dir=="/boot") then
                f:close()
-               return getUUID(m) or nil
+               local id = getUUID(m)
+               if id then
+                  return id
+               end
+               break
             end
          end
       until t==nil
       f:close()
    end
-
    _syslog.print(_syslog.WARN,"cannot determine flash id of current directory")
    return nil
 end

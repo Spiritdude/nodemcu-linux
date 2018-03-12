@@ -83,15 +83,15 @@ end
 
 node.flashid = function()        -- Returns the flash chip ID.
    -- check /dev/disk/by-uuid and blkid <dev> to lookup UUID of disk
-   local getUUID = function(dir)
-      local f = io.popen("lsblk --output UUID "..dir)    -- lookup UUID of disk mounted at dir
+   local getUUID = function(dev)
+      local f = io.popen("lsblk --output UUID "..dev)    -- lookup UUID of device
       if f then
          _ = f:read("*line")   -- 'UUID'
          _ = f:read("*line")
          f:close()
          return _ and _:match("(%S+)") or nil   -- pass disk UUID
       end
-      _syslog.print(_syslog.WARN,"failed to determine disk UUID of "..dir)
+      _syslog.print(_syslog.WARN,"failed to determine disk UUID of "..dev)
       return nil
    end
    
@@ -103,7 +103,7 @@ node.flashid = function()        -- Returns the flash chip ID.
       local m = _ and _:match("(%S+)") or nil
       if m then
          local id = getUUID(m)
-         _syslog.print(_syslog.INFO,"disk UUID of "..m.." is "..tostring(id))
+         --_syslog.print(_syslog.INFO,"disk UUID of "..m.." is "..tostring(id).." [1]")
          if id then 
             return id
          end
@@ -116,12 +116,12 @@ node.flashid = function()        -- Returns the flash chip ID.
       repeat 
          t = f:read("*line")
          if t then
-            local dev,on,dir = t:match("(%s+)%S+(%s+)")
+            local dev,on,dir = t:match("(%S+)%s+(%S+)%s+(%S+)")
             if dir and (dir=="/" or dir=="/home" or dir=="/boot") then
-               f:close()
-               local id = getUUID(dir)
-               _syslog.print(_syslog.INFO,"disk UUID of "..dir.." is "..tostring(id))
+               local id = getUUID(dev)
+               --_syslog.print(_syslog.INFO,"disk UUID of "..dev.." is "..tostring(id).." [2]")
                if id then
+                  f:close()
                   return id
                end
                break

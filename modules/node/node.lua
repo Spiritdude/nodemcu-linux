@@ -91,6 +91,7 @@ node.flashid = function()        -- Returns the flash chip ID.
          f:close()
          return _ and _:match("(%S+)") or nil   -- pass disk UUID
       end
+      _syslog.print(_syslog.WARN,"failed to determine disk UUID of "..dir)
       return nil
    end
    

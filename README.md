@@ -36,7 +36,7 @@ running with Lua 5.1 with the [LuaNode](https://github.com/ignacio/LuaNode) (`lu
 NanoPi NEO | Armbian 5.38 | BUILDS, BOOTS, STARTUP
 Orange Pi Lite | Armbian 5.27 | BUILDS, BOOTS, STARTUP
 Orange Pi Zero | Armbian 5.27 | BUILDS, BOOTS, STARTUP
-Raspberry Pi | Raspbian 9.1 | BUILDS, BOOTS, STARTUP
+Raspberry Pi | Raspbian 9.1 | BUILDS, BOOTS
  
 ## Todo
 - implement **all** base modules **completely** and document it properly

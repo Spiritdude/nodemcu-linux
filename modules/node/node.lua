@@ -103,6 +103,7 @@ node.flashid = function()        -- Returns the flash chip ID.
       local m = _ and _:match("(%S+)") or nil
       if m then
          local id = getUUID(m)
+         _syslog.print(_syslog.INFO,"disk UUID of "..m.." is "..tostring(id))
          if id then 
             return id
          end
@@ -118,7 +119,8 @@ node.flashid = function()        -- Returns the flash chip ID.
             local dev,on,dir = t:match("(%s+)%S+(%s+)")
             if dir and (dir=="/" or dir=="/home" or dir=="/boot") then
                f:close()
-               local id = getUUID(m)
+               local id = getUUID(dir)
+               _syslog.print(_syslog.INFO,"disk UUID of "..dir.." is "..tostring(id))
                if id then
                   return id
                end

@@ -84,15 +84,21 @@ end
 node.flashid = function()        -- Returns the flash chip ID.
    -- check /dev/disk/by-uuid and blkid <dev> to lookup UUID of disk
    local f = io.popen("df -k .")
-   _ = f:read("*line")
-   _ = f:read("*line")  -- get mount point
-   f:close()
-   local m = _:match("(%S+)")
-   f = io.popen("lsblk --output UUID "..m)    -- lookup UUID of disk mounted at '.'
-   _ = f:read("*line")   -- 'UUID'
-   _ = f:read("*line")
-   f:close()
-   return _:match("(%S+)")    -- pass disk UUID as flashid
+      if f then
+      _ = f:read("*line")
+      _ = f:read("*line")  -- get mount point
+      f:close()
+      local m = _:match("(%S+)")
+      f = io.popen("lsblk --output UUID "..m)    -- lookup UUID of disk mounted at '.'
+      if f then
+         _ = f:read("*line")   -- 'UUID'
+         _ = f:read("*line")
+         f:close()
+         return _:match("(%S+)")    -- pass disk UUID as flashid
+      end
+   end
+   _syslog.print(_syslog.WARN,"cannot determine flash id of current directory")
+   return nil
 end
 
 node.flashsize = function()      -- Returns the flash chip size in bytes.

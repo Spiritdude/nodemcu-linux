@@ -31,7 +31,7 @@ Check out the [NodeMCU/Linux Wiki](https://github.com/Spiritdude/nodemcu-linux/w
 running with Lua 5.1 with the [LuaNode](https://github.com/ignacio/LuaNode) (`luanode`) extension with `ffi` support.
 
 ### Boards
- Board | OS | Success
+ Board | OS | Success 
 --- | --- | ---
 NanoPi NEO | Armbian 5.38 | BUILDS, BOOTS, STARTUP
 Orange Pi Lite | Armbian 5.27 | BUILDS, BOOTS, STARTUP

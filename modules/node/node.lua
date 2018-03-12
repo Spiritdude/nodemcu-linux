@@ -83,20 +83,42 @@ end
 
 node.flashid = function()        -- Returns the flash chip ID.
    -- check /dev/disk/by-uuid and blkid <dev> to lookup UUID of disk
-   local f = io.popen("df -k .")
-      if f then
-      _ = f:read("*line")
-      _ = f:read("*line")  -- get mount point
-      f:close()
-      local m = _:match("(%S+)")
-      f = io.popen("lsblk --output UUID "..m)    -- lookup UUID of disk mounted at '.'
+   local getUUID = function(dir)
+      local f = io.popen("lsblk --output UUID "..dir)    -- lookup UUID of disk mounted at dir
       if f then
          _ = f:read("*line")   -- 'UUID'
          _ = f:read("*line")
          f:close()
-         return _:match("(%S+)")    -- pass disk UUID as flashid
+         return _ and _:match("(%S+)") or nil   -- pass disk UUID
       end
+      return nil
    end
+   
+   local f = io.popen("df -k .") -- what mount point we reside in?
+   if f then
+      _ = f:read("*line")
+      _ = f:read("*line")        -- get mount point
+      f:close()
+      local m = _ and _:match("(%S+)") or nil
+      return m and getUUID(m) or nil
+   end
+
+   local f = io.popen("mount")   -- fallback, check "/" or "/home" or "/boot" and consider it as main disk
+   if f then
+      local t
+      repeat 
+         t = f:read("*line")
+         if t then
+            local dev,on,dir = t:match("(%s+)%S+(%s+)")
+            if dir and (dir=="/" or dir=="/home" or dir=="/boot") then
+               f:close()
+               return getUUID(m) or nil
+            end
+         end
+      until t==nil
+      f:close()
+   end
+
    _syslog.print(_syslog.WARN,"cannot determine flash id of current directory")
    return nil
 end

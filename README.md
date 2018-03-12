@@ -73,21 +73,25 @@ The `>` is the prompt of the Lua console - abort with CTRL-C.
 
 ```
 % nodemcu --help
-NodeMCU/Linux 0.0.6 USAGE: nodemcu {[options] .. } {[file] .. }
+NodeMCU/Linux 0.0.7 USAGE: nodemcu {[options] .. } {[file1] .. }
    options:
-      -v or -vv         increase verbosity
-      --verbose=<n>     define verbosity n = 0..10
-      -h                print this usage help
-      --help               "           "
-      --version         display version and exit
-      
+      -v or -vv            increase verbosity
+      --verbose=<n>        define verbosity n = 0..10
+      -h or --help         print this usage help
+      -s or --silent       silent
+      -e or --execute      execute rest of arguments as code
+      --version            display version and exit
+      --package.path=<p>   define or add package path, use '+' to add additional path
+
    examples:
       nodemcu                    boot and execute init.lua and enter Lua console
-      nodemcu --version          
+      nodemcu --version
       nodemcu --help
-      nodemcu -vvv 
+      nodemcu -vvv
       nodemcu --verbose=3
       nodemcu test.lua           boot and execute test.lua and exit
+      nodemcu -e 'table.foreach(_sysinfo,print)'
+      nodemcu --package.path=+./
 
 % nodemcu -v
 I [0.000] loading modules ('node' and 'tmr' already loaded)
@@ -100,7 +104,7 @@ I [0.024] dofile /usr/local/lib/nodemcu/modules/rtctime/rtctime.lua
 I [0.025] dofile /usr/local/lib/nodemcu/modules/sjson/sjson.lua
 I [0.042] modules bit, struct built-in added
 I [0.043] module math added
-NodeMCU/Linux 0.0.6 powered by Lua 5.1, Device ID: 4310175 / 0x41c49f
+NodeMCU/Linux 0.0.7 powered by Lua 5.1, Device ID: 4310175 / 0x41c49f
    armv7l (4 cores, 240-1200MHz)
    modules: node tmr file gpio i2c net rtctime sjson bit struct math
    cpu freq table [MHz]: 60, 120, 240, 312, 408, 480, 504, 528, 576, 600, 624, 648, 672, 720, 768, 816, 864, 912, 960, 1010, 1060, 1100, 1150, 1200, 1250, 1300, 1340, 1440, 1540

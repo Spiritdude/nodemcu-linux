@@ -103,7 +103,7 @@ node.flashid = function()        -- Returns the flash chip ID.
       local m = _ and _:match("(%S+)") or nil
       if m then
          local id = getUUID(m)
-         _syslog.print(_syslog.INFO,"disk UUID of "..m.." is "..tostring(id).." [1]")
+         --_syslog.print(_syslog.INFO,"disk UUID of "..m.." is "..tostring(id).." [1]")
          if id then 
             return id
          end
